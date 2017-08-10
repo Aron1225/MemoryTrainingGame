@@ -1,0 +1,82 @@
+﻿using UnityEngine;
+using UnityEditor;
+
+public class Level1_1Editor : MonoBehaviour
+{
+//	[CustomEditor (typeof(Level1_DB))]
+//	public class Level1_Select_Editor : Editor
+//	{
+//		public override void OnInspectorGUI ()
+//		{
+//			Level1_DB DB = target as Level1_DB;
+//			Level1_1 edit = target as Level1_1;
+//
+//			GUILayout.Space (15);
+//
+//			EditorGUILayout.BeginHorizontal ();
+//
+//			GUILayout.Label ("排列圖", GUILayout.Width (40));
+//
+//			DB.arrangement_index = EditorGUILayout.IntField (DB.arrangement_index);
+//
+//			//只有數值變化時執行
+//			if (GUI.changed) {
+//				Debug.Log ("value change");
+//			}
+//
+//			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
+//				DB.arrangement_index = 0;
+//			}
+//
+//			if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//				DB.arrangement_index++;///要設計最大不可超過值
+//			}
+//			if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//				if (DB.arrangement_index > 0) {
+//					DB.arrangement_index--;
+//				}
+//			}
+//
+//			EditorGUILayout.EndHorizontal ();
+//
+//			EditorGUILayout.BeginHorizontal ();
+//			{
+//				GUILayout.Label ("LightTime", GUILayout.Width (60));
+//
+//				DB.lighttime = EditorGUILayout.FloatField (DB.lighttime);
+//
+//				if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//					DB.lighttime += 0.5f;///要設計最大不可超過值
+//				}
+//				if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//					if (DB.lighttime > 0) {
+//						DB.lighttime -= 0.5f;
+//					}
+//				}
+//			}
+//
+//			EditorGUILayout.EndHorizontal ();
+//
+//			EditorGUILayout.BeginHorizontal ();
+//			{
+//				GUILayout.Label ("DarkTime", GUILayout.Width (60));
+//
+//				DB.darktime = EditorGUILayout.FloatField (DB.darktime);
+//
+//				if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//					DB.darktime += 0.5f;///要設計最大不可超過值
+//				}
+//				if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//					if (DB.darktime > 0) {
+//						DB.darktime -= 0.5f;
+//					}
+//				}
+//			}
+//			EditorGUILayout.EndHorizontal ();
+//
+//			//顯示預設檢視面板屬性編輯器
+//			//			DrawDefaultInspector ();
+//			
+//		}
+//	}
+}
