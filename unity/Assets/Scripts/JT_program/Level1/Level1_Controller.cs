@@ -113,7 +113,7 @@ public class Level1_Controller:MonoBehaviour
 
 	//public..................................................................
 
-	//遊戲結束
+	//遊戲結束,完成遊戲後顯示資訊
 	public void Finish ()
 	{	
 		Suppress_Feedback = true;//壓制Feedback()執行
@@ -511,7 +511,7 @@ public class Level1_Controller:MonoBehaviour
 
 	//UI direction................................
 
-	//完成遊戲後顯示資訊
+
 	public void UI_Billboard_dir (bool Forward)
 	{
 		UI.Billboard.SetActive (true);

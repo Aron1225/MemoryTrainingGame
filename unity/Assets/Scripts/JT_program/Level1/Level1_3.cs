@@ -10,46 +10,73 @@ public class Level1_3 : MonoBehaviour
 	Level1_DB DB;
 	Level1_Controller Controller;
 
-	private int Loop = 5;
-	private int LevelCount = 0, LoopFlag = 0;
-	//使每關可以完Loop次
-	int checkCount = 0;
-	//{{a,b},{c,d}}=>x到y重複Loop次
-	int[,] Level = { { 0, 4 }, { 5, 9 }, { 10, 14 }, { 15, 19 }, { 20, 24 } };
-	int Level_length;
+	int[][,,] LevelParameter;
+	//關卡參數
+
+	//	private int Loop = 5;
+	//	private int LevelCount = 0, LoopFlag = 0;
+	//	//使每關可以完Loop次
+	//	int checkCount = 0;
+	//	//{{a,b},{c,d}}=>x到y重複Loop次
+	//	int[,] Level = { { 0, 4 }, { 5, 9 }, { 10, 14 }, { 15, 19 }, { 20, 24 } };
+	//	int Level_length;
 
 	void Awake ()
 	{
 		UI = GetComponent<Level1_UI> ();
 		DB = GetComponent<Level1_DB> ();
 		Controller = GetComponent<Level1_Controller> ();
-		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = GameStart;
-		Level_length = Level.GetLength (0);
+//		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = GameStart;
+//		Level_length = Level.GetLength (0);
 	}
 
 	void Start ()
 	{
+		Parameter ();
+
 		//讀取地圖
 		MAP ();
 
-		//因應不同關卡,判斷方式也不同
-		Override_AddListener ();
+		ButtonEvent ();
 	}
 
-	void GameStart (GameObject go)
+	void ButtonEvent ()
 	{
-		//遊戲開始
-		StartCoroutine (GameLoop ());
+		Controller.StartGameLoop += (GameObject go) => StartCoroutine (GameLoop ());
 	}
 
-	void FixedUpdate ()
+	void Parameter ()
 	{
-		
-	}
+		//{Loop,Random},{range1,range2}
+		LevelParameter = new int[][,,] {
 
-	void OnDestroy ()
-	{
-		
+			new int[,,]{ { { 5, 2 }, { 0, 4 } } },//1
+			new int[,,]{ { { 20, 3 }, { 5, 9 } } }, //2
+			new int[,,]{ { { 25, 3 }, { 10, 14 } } },//3
+			new int[,,]{ { { 25, 4 }, { 15, 19 } } },//4
+			new int[,,]{ { { 30, 4 }, { 20, 24 } } },//5
+			new int[,,]{ { { 30, 5 }, { 25, 29 } } },//6
+			new int[,,]{ { { 35, 5 }, { 30, 34 } } }, //7
+			new int[,,]{ { { 35, 6 }, { 35, 39 } } },//8
+			new int[,,]{ { { 20, 6 }, { 40, 44 } }, { { 20, 7 }, { 40, 44 } } },//9
+			new int[,,]{ { { 20, 7 }, { 45, 49 } }, { { 20, 8 }, { 45, 49 } } },//10
+
+
+//			new int[,,]{ { { 20, 2 }, { 0, 3 } } },//1
+//			new int[,,]{ { { 20, 3 }, { 0, 3 } } },//2
+//
+//			new int[,,]{ { { 25, 3 }, { 4, 7 } } },//3
+//			new int[,,]{ { { 25, 4 }, { 4, 7 } } },//4
+//
+//			new int[,,]{ { { 30, 4 }, { 8, 11 } } },//5
+//			new int[,,]{ { { 30, 5 }, { 8, 11 } } },//6
+//
+//			new int[,,]{ { { 35, 5 }, { 12, 13 } } },//7
+//			new int[,,]{ { { 35, 6 }, { 12, 13 } } },//8
+//
+//			new int[,,]{ { { 20, 6 }, { 14, 17 } }, { { 20, 7 }, { 14, 17 } } },//9
+//			new int[,,]{ { { 20, 7 }, { 18, 21 } }, { { 20, 8 }, { 18, 21 } } },//10
+		};
 	}
 
 	private void MAP ()
@@ -60,57 +87,73 @@ public class Level1_3 : MonoBehaviour
 		Controller.LoadMap (DB.map [2].text);
 	}
 
-	//將Controller的Onclick覆蓋過去
-	private void Override_AddListener ()
-	{
-		UIEventListener.Get (UI.Button_UP.gameObject).onClick = Override_select_Level;
-		UIEventListener.Get (UI.Button_DOWN.gameObject).onClick = Override_select_Level;
-	}
-
-	private void Override_select_Level (GameObject btn)
-	{
-		int getText = int.Parse (UI.Label_Level.text);
-
-		if (btn == UI.Button_UP.gameObject && DB.arrangement_index < Level [Level_length - 1, 0]) {
-			DB.arrangement_index += Level_length;
-			LoopFlag += 1;
-			UI.Label_Level.text = (getText + 1).ToString ();
-		}
-		if (btn == UI.Button_DOWN.gameObject && DB.arrangement_index > 0) {
-			DB.arrangement_index -= Level_length;
-			LoopFlag -= 1;
-			UI.Label_Level.text = (getText - 1).ToString ();
-		}
-	}
-
-	private bool IfTheEnd ()
-	{
-		bool check = true;//確保最後一關也能執行Loop次
-
-		if (++checkCount != Loop)
-			return false;
-		else {
-			checkCount = 0;
-			check = false;
-		}
-
-		if (LevelCount + 1 != Loop && check)
-			return false;
-
-		if (LoopFlag + 1 < Level_length)
-			return false;
-
-		return true;
-	}
-
 	IEnumerator GameLoop ()
 	{
-//		Controller.Select_Slider_forward ();//歸位UI
+		IEnumerator e = Loop1 (DB.Select_Level_number);
 
-		while (true) {
+		yield return StartCoroutine (e);
 
-			//關卡設定
-			yield return StartCoroutine (LevelManagement ());
+		//回傳遊戲是如何結束
+		//回傳0代表正常結束遊戲
+		//回傳1代表錯誤9次
+		//回傳2代表遊戲閒置
+
+		int code = (int)e.Current;
+
+		if (code == 0) {
+			Controller.Finish ();//結束遊戲
+			Debug.Log ("finish");
+		}
+		if (code == 1) {
+			Controller.GameOver ();//錯誤9次
+			Debug.Log ("GameOver");
+		}
+		if (code == 2) {
+			Controller.TimeOut ();//遊戲閒置
+			Debug.Log ("TimeOut");
+		}
+		yield break;
+	}
+
+	IEnumerator Loop1 (int Select_Level_number)
+	{
+		int number = Select_Level_number - 1;
+
+		IEnumerator e = null;
+
+		for (int i = 0; i < LevelParameter [number].GetLength (0); i++) {
+
+			var Loop = LevelParameter [number] [i, 0, 0];
+
+			DB.random = LevelParameter [number] [i, 0, 1];
+
+			var mapRange1 = LevelParameter [number] [i, 1, 0];//0
+
+			var mapRange2 = LevelParameter [number] [i, 1, 1];//3
+
+			List<List<Vector3>> maps = Controller.GetMapRange (mapRange1, mapRange2);//0~3,取得指定範圍地圖陣列
+
+			e = Loop2 (Loop, maps);
+
+			yield return StartCoroutine (e);
+
+			if (e.Current != null)
+				break;
+		}
+
+		yield return e.Current;//回傳至GameLoop
+	}
+
+	IEnumerator Loop2 (int Loop, List<List<Vector3>> maps)
+	{
+		int CheckCode = 0, Count = 0, index = 0;
+
+		while (Count++ != Loop) {
+
+			if (index == maps.Count)
+				index = 0;
+
+			yield return StartCoroutine (LevelManagement (maps [index++]));
 
 			//隨機亂數
 			yield return StartCoroutine (MakeRandom (DB.random));
@@ -124,43 +167,29 @@ public class Level1_3 : MonoBehaviour
 			//重置
 			yield return StartCoroutine (Reset ());
 
-			if (Controller.IfTheEnd (IfTheEnd) || Controller.Feedback (DB.LevelUP))
-				yield break;
+			if (Controller.Feedback (DB.LevelUP)) {
+				CheckCode = 1;
+				break;
+			}
 
-			//等待下一幀
+			if (Controller.IfTimeOut ()) {
+				CheckCode = 2;
+				break;
+			}
 			yield return null;
 		}
+
+		yield return CheckCode;//回傳至Loop1
 	}
 
 	///關卡設定
-	IEnumerator LevelManagement ()
+	IEnumerator LevelManagement (List<Vector3> map)
 	{
-		bool needAdd = true;
+		Controller.DisplaySliderBar ();//更新難度條
 
-		if (DB.arrangement_index == Level [LoopFlag, 1]) {
-			DB.arrangement_index = Level [LoopFlag, 0];
-			needAdd = false;
-		}
+		var mapCount = map.Count;   
 
-		//下一關圖形
-		if (LevelCount++ == Loop) {
-			LevelCount = 1;
-			LoopFlag++;
-			DB.arrangement_index = Level [LoopFlag, 0];
-			needAdd = false;
-		}
-
-		Controller.DisplaySliderBar (() => {
-			float increase = (LoopFlag + 1) * 1f / Level_length;
-			return increase;
-		});
-
-		if (!DB.start)
-			DB.g_iBalance = -DB.arrangement [DB.arrangement_index].Count;
-		else {
-			DB.arrangement_index = (needAdd) ? DB.arrangement_index + 1 : DB.arrangement_index;
-			DB.g_iBalance = Level1_DB.UFOList.Count - DB.arrangement [DB.arrangement_index].Count;//缺(多)幾台UFO
-		}
+		DB.g_iBalance = Level1_DB.UFOList.Count - mapCount;//多(少)幾台
 
 		//extra
 		if (DB.g_iBalance > 0) {
@@ -174,10 +203,54 @@ public class Level1_3 : MonoBehaviour
 		} 
 
 		//重設場上所有UFO座標
-		for (int i = 0; i < DB.arrangement [DB.arrangement_index].Count; i++)
-			Level1_DB.UFOList [i].moveTo (0.7f, DB.arrangement [DB.arrangement_index] [i], true, 0.1f);
+		for (int i = 0; i < mapCount; i++)
+			Level1_DB.UFOList [i].moveTo (0.8f, map [i], true, 0.1f);
 
 		yield break;
+
+//		bool needAdd = true;
+//
+//		if (DB.arrangement_index == Level [LoopFlag, 1]) {
+//			DB.arrangement_index = Level [LoopFlag, 0];
+//			needAdd = false;
+//		}
+//
+//		//下一關圖形
+//		if (LevelCount++ == Loop) {
+//			LevelCount = 1;
+//			LoopFlag++;
+//			DB.arrangement_index = Level [LoopFlag, 0];
+//			needAdd = false;
+//		}
+//
+//		Controller.DisplaySliderBar (() => {
+//			float increase = (LoopFlag + 1) * 1f / Level_length;
+//			return increase;
+//		});
+//
+//		if (!DB.start)
+//			DB.g_iBalance = -DB.arrangement [DB.arrangement_index].Count;
+//		else {
+//			DB.arrangement_index = (needAdd) ? DB.arrangement_index + 1 : DB.arrangement_index;
+//			DB.g_iBalance = Level1_DB.UFOList.Count - DB.arrangement [DB.arrangement_index].Count;//缺(多)幾台UFO
+//		}
+//
+//		//extra
+//		if (DB.g_iBalance > 0) {
+//			UFO.DestroyUFO (DB.g_iBalance);//Destroy幾台
+//		}
+//
+//		//lack
+//		if (DB.g_iBalance < 0) {
+//			DB.g_iBalance *= -1;
+//			UFO.InstantiateUFOs (DB.g_iBalance);//實例化UFO
+//		} 
+//
+//		//重設場上所有UFO座標
+//		for (int i = 0; i < DB.arrangement [DB.arrangement_index].Count; i++)
+//			Level1_DB.UFOList [i].moveTo (0.7f, DB.arrangement [DB.arrangement_index] [i], true, 0.1f);
+//
+//		yield break;
 	}
 
 	//隨機亂數
@@ -232,7 +305,9 @@ public class Level1_3 : MonoBehaviour
 
 		int RandomCount = Level1_DB.UFO_Random.Count;
 
-		while (true) {
+		Controller.CountDownStart ();//30秒到數
+
+		while (DB.Compare) {
 			//UFO數量到達時判斷
 			if (RandomCount == Level1_DB.UFO.Count) {
 
@@ -245,6 +320,8 @@ public class Level1_3 : MonoBehaviour
 
 				Controller.Record (DB.LevelUP);
 
+				Controller.ResetTimeOutCount ();//只要有作答TimeOutCount就歸零
+
 				break;//跳出while迴圈
 			}
 			yield return null;//等待下一幀
@@ -256,6 +333,7 @@ public class Level1_3 : MonoBehaviour
 	IEnumerator Reset ()
 	{
 		Level1_DB.UFOList.ForEach (go => go.Original (false));
+		DB.Compare = true;
 		DB.start = true;
 		yield break;
 	}

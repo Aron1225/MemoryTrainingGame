@@ -14,8 +14,6 @@ public class Level1_1 : MonoBehaviour
 
 	int[][,] LevelParameter;
 
-	//	int[,] LevelParameter;
-
 	//	//同一關玩幾次
 	//	private int Loop = 5;
 	//	private int LevelCount = 0;
@@ -25,7 +23,6 @@ public class Level1_1 : MonoBehaviour
 		UI = GetComponent<Level1_UI> ();
 		DB = GetComponent<Level1_DB> ();
 		Controller = GetComponent<Level1_Controller> ();
-//		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = GameStart;
 	}
 
 	void Start ()
@@ -41,14 +38,6 @@ public class Level1_1 : MonoBehaviour
 	{
 		Controller.StartGameLoop += (GameObject go) => StartCoroutine (GameLoop ());
 	}
-		
-	//	void GameStart (GameObject go)
-	//	{
-	//		//遊戲開始
-	//		StartCoroutine (GameLoop ());
-	//
-	//		Controller.start ();
-	//	}
 
 	void Parameter ()
 	{
@@ -66,7 +55,7 @@ public class Level1_1 : MonoBehaviour
 //			new int[,] { { 1, 4, 6 }, { 1, 4, 7 } },//9
 //			new int[,] { { 1, 5, 7 }, { 1, 5, 8 } },//10
 
-			new int[,] { { 1, 0, 2 } },//1
+			new int[,] { { 20, 0, 2 } },//1
 			new int[,] { { 20, 0, 3 } },//2
 			new int[,] { { 25, 1, 3 } },//3
 			new int[,] { { 25, 1, 4 } },//4
@@ -118,20 +107,27 @@ public class Level1_1 : MonoBehaviour
 
 	IEnumerator Loop1 (int Select_Level_number)
 	{
-		for (int i = 0; i < LevelParameter [Select_Level_number - 1].GetLength (0); i++) {
+		int number = Select_Level_number - 1;
 
-			var Loop = LevelParameter [Select_Level_number - 1] [i, 0];
+		IEnumerator e = null;
 
-			var map = DB.arrangement [LevelParameter [Select_Level_number - 1] [i, 1]];
+		for (int i = 0; i < LevelParameter [number].GetLength (0); i++) {
+
+			var Loop = LevelParameter [number] [i, 0];
+
+			var map = DB.arrangement [LevelParameter [number] [i, 1]];
 			
-			DB.random = LevelParameter [Select_Level_number - 1] [i, 2];
+			DB.random = LevelParameter [number] [i, 2];
 
-			IEnumerator e = Loop2 (Loop, map);
+			e = Loop2 (Loop, map);
 			
 			yield return StartCoroutine (e);
 
-			yield return e.Current;//回傳至GameLoop
+			if (e.Current != null)
+				break;
 		}
+
+		yield return e.Current;
 	}
 
 	IEnumerator Loop2 (int Loop, List<Vector3> map)
@@ -225,7 +221,6 @@ public class Level1_1 : MonoBehaviour
 //		if (DB.g_iBalance != 0)
 //			for (int i = 0; i < DB.arrangement [DB.arrangement_index].Count; i++)
 //				Level1_DB.UFOList [i].moveTo (1f, DB.arrangement [DB.arrangement_index] [i], true, 0.1f);
-
 	}
 		
 	//隨機亂數
