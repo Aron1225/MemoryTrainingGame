@@ -7,9 +7,7 @@ public class DefalueHorse : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-		Debug.Log( Mathf.Atan(45f));
         StartCoroutine("DelayHorse1");
-
     }
     IEnumerator DelayHorse1()
     {
@@ -17,6 +15,7 @@ public class DefalueHorse : MonoBehaviour {
 
         StartCoroutine("DelayHorse2");
         //ShowQusStatus = false;
+
     }
     IEnumerator DelayHorse2()
     {

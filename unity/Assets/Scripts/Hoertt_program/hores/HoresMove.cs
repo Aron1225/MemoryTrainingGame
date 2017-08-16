@@ -1,73 +1,105 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class HoresMove : MonoBehaviour {
-    [SerializeField]private float TimerX, TimerY;
-    [SerializeField]private bool turn;
-    private  Renderer MyRenderer;
-    private int sortorder=0;
 
-    private Vector3 pos;
+    Vector3 point = new Vector3();
+    static int i;
+    public static int Level = 1;
+    float Radius = 10;
+    private Vector3 pos,rPos;
+    private static bool AnsCover;
+    private GameObject[] LoadHores;
+    public static int[]  SequArr, RandomArr;
+
+    public static List<GameObject> objlist = new List<GameObject>();
+    public static List<int> HoresCount = new List<int>();
+    static List<int> QusArr = new List<int>();
+    static List<string> AnsArr = new List<string>();
+
     // Use this for initialization
-    void Start() {
-        //      pos = GameObject.Find("background2").transform.position - NewVector3(0,2f,0);
-        
-        MyRenderer= this.GetComponent<Renderer>();
 
-        Hashtable args = new Hashtable();
-
-        //这里是设置类型，iTween的类型又很多种，在源码中的枚举EaseType中  
-        //例如移动的特效，先震动在移动、先后退在移动、先加速在变速、等等  
-        args.Add("easeType", iTween.EaseType.linear);
-
-        //移动的速度，  
-        args.Add("speed", 2f);
-        //移动的整体时间。如果与speed共存那么优先speed  
-        args.Add("time", 6f);
-        //这个是处理颜色的。可以看源码的那个枚举。  
-        //args.Add("NamedValueColor", "_SpecColor");
-        //延迟执行时间  
-        //args.Add("delay", 0.1f);
-
-        //是否让游戏对象始终面朝路径行进的方向，拐弯的地方会自动旋转。  
-        //    args.Add("orienttopath", true);
-        //移动的过程中面朝一个点，当“orienttopath”为true时该参数失效 
-
-        // args.Add("looktarget", Vector3.zero);
-        //游戏对象看向“looktarget”的秒数。  
-        // args.Add("looktime", 1.1);
-
-
-        //游戏对象移动的路径可以为Vector3[]或Transform[] 类型。可通过iTweenPath编辑获取路径  
-        //Vector3[] testPath = { new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 1, 1), new Vector3(1, 1, 1), new Vector3(1, 5, 1) };
-        //args.Add("path", testPath);
-        args.Add("path", iTweenPath.GetPath(gameObject.name + "Path"));
-        //是否移动到路径的起始位置（false：游戏对象立即处于路径的起始点，true：游戏对象将从原是位置移动到路径的起始点）  
-        args.Add("movetopath", false);
-
-        //当包含“path”参数且“orienttopath”为true时，该值用于计算“looktarget”的值，表示游戏物体看着前方点的位置，（百分比，默认0.05）  
-        // args.Add("lookahead", 100);
-
-        //限制仅在指定的轴上旋转  
-        // args.Add("axis", "z");
-        //是否使用局部坐标(默认为false)  
-        args.Add("islocal", false);
-
-
-        //args.Add("oncomplete", "AnimationEnd");
-        //args.Add("oncompleteparams", "end");
-        //args.Add("oncompletetarget", gameObject);
-        //三个循环类型 none loop pingPong (一般 循环 来回)    
-        //args.Add("loopType", "none");  
-        //args.Add("loopType", "loop");   
-        //args.Add("loopType", iTween.LoopType.pingPong);
-        args.Add("loopType", "loop");
-        iTween.MoveTo(gameObject, args);
-    }
-    static Vector3 NewVector3(float x, float y, float z)
+    public class CreatHores
     {
-        Vector3 test = new Vector3(x, y, z);
-        return test;
+        public static int P_Pos = 0;
+
+        public GameObject GetHores { get; private set; }
+
+        public CreatHores (GameObject GO)
+        {
+            GO = Instantiate(GO, parent: GameObject.Find("CerculPoint").transform) as GameObject;
+
+            //GO.transform.localScale = Vector3.one;
+
+
+            GO.name = "Hores(" + P_Pos + ")";
+
+            objlist.Add(GO);
+
+            GetHores = GO;
+            P_Pos++;
+        }
+
+    }
+
+    public void Initialization()
+    {
+        foreach (GameObject item in objlist)
+        {
+            Destroy(item);
+        }
+        objlist = new List<GameObject>();
+        Hores_Click.clickopen = true;
+        for (int i = 0; i < HoresCount[Level]; i++)
+        {
+            new CreatHores(LoadHores[1]);
+        }
+       RandomArr=SequArr = new int[objlist.Count];
+        makeRandomArr(objlist.Count);
+        SetRadius(6);
+    }
+
+    /// <summary>
+    /// 製作亂數，儲存於RandomArr[_Qusnum]
+    /// RandomArr[]內存1~objlist.count不重複亂數排列
+    /// </summary>
+    /// <param name="_Qusnum"></param>
+    /// <param name="_Randnum"></param>
+    void makeRandomArr(int _Qusnum)
+    {
+
+        //RandomArr = new int[_Randnum];
+        //Qusnum = _Qusnum;
+        //Randnum = _Randnum;
+        for (int i = 0; i < SequArr.Length; i++)
+        {
+            SequArr[i] = i + 1;
+        }
+        int end = SequArr.Length - 1;
+        for (int i = 0; i < _Qusnum; i++)
+        {
+            int num = Random.Range(0, end + 1);
+            RandomArr[i] = SequArr[num];
+            SequArr[num] = SequArr[end];
+            end--;
+        }
+    }
+
+
+
+    void Start()
+    {
+        ImporTable();
+        LoadHores = Resources.LoadAll<GameObject>("Hoertt/HoresGroup");
+        
+
+        
+        //rPos = transform.localPosition;
+        //      pos = GameObject.Find("background2").transform.position - NewVector3(0,2f,0);
+        point = GameObject.Find("CerculPoint").transform.localPosition;
+        //MyRenderer = this.GetComponent<Renderer>();
+        
+        Initialization();
     }
     // Update is called once per frame
     //private void OnCollisionexit2D(Collision2D collision)
@@ -87,76 +119,71 @@ public class HoresMove : MonoBehaviour {
 
     //    Debug.Log("rota");
     //}
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.name != "horse1" && collision.gameObject.name != "horse2" && collision.gameObject.name != "horse3")
-        {			
-            if (turn == true && collision.gameObject.name == "Wall_Left" )
-            {
-                sortorder = 0;
-                MyRenderer.sortingOrder = sortorder;
-                turn = false;
-                Hashtable argsrota = new Hashtable();
-
-                argsrota.Add("rotation", new Vector3(0, 0, 0));
-                argsrota.Add("x", 0);
-                argsrota.Add("y", 180);
-                argsrota.Add("z", 0);
-                //argsrota.Add("islocal", true);
-
-                argsrota.Add("time", 2.5f);
-
-                argsrota.Add("easeType", iTween.EaseType.linear);
-
-                argsrota.Add("loopType", iTween.LoopType.none);
-
-                iTween.RotateAdd(gameObject, argsrota);
-
-                Debug.Log(gameObject.name + " rota " + collision.gameObject.name+ gameObject.layer);
-            }
-            else if (turn==false&& collision.gameObject.name == "Wall_Right")
-            {
-                sortorder = 2;
-                MyRenderer.sortingOrder = sortorder;
-                turn = true;
-                Hashtable argsrota = new Hashtable();
-
-                argsrota.Add("rotation", new Vector3(0, 0, 0));
-                argsrota.Add("x", 0);
-                argsrota.Add("y", -180);
-                argsrota.Add("z", 0);
-                //argsrota.Add("islocal", true);
-
-                argsrota.Add("time", 2.5f);
-
-                argsrota.Add("easeType", iTween.EaseType.linear);
-
-                argsrota.Add("loopType", iTween.LoopType.none);
-
-                iTween.RotateAdd(gameObject, argsrota);
-
-                Debug.Log(gameObject.name + " rota " + collision.gameObject.name+ gameObject.layer);
-            }
-        }
-    }
+    
     void Update () {
-        ////TimerX += 0.02f;
-        //TimerY += 0.05f;
-        //Vector3 rPos = pos;
-        //rPos.x = rPos.x + Mathf.Cos(TimerX) * 10f;
-        //rPos.y = rPos.y - (Mathf.Sin(TimerY)) * 1.5f;
-        //if (rPos.x>=GameObject.Find("background2").transform.position.x + 7)
-        //{
-        //    transform.rotation=Quaternion.Euler(0f, 0f, 0f);
-        //}
-        //else if (rPos.x <= GameObject.Find("background2").transform.position.x - 7)
-        //{
-        //    transform.rotation=Quaternion.Euler(0f,180f,0f);
+        objlist[0].transform.Translate(Mathf.Cos(Time.fixedTime) * 0.02f * Vector3.up);
+        objlist[1].transform.Translate(Mathf.Cos(Time.fixedTime) * 0.02f * Vector3.down);
+        //objlist[2].transform.Translate(Mathf.Cos(Time.fixedTime) * 0.02f * Vector3.down);
+
+        GameObject.Find("CerculPoint").transform.RotateAround(point, Vector3.up, 20 * Time.deltaTime);
+        
+    }
+    void SetRadius (float t)
+    {
+        int A = 1;
+        Radius = t;
+        foreach ( GameObject obj in objlist)
+        {
+            Debug.Log(360 / HoresCount[Level]);
+            obj.transform.position = point;
+            obj.transform.Translate(Vector3.forward * (-Radius) * Mathf.Sin(Mathf.PI / 180 * (360 / HoresCount[Level])*A) + Vector3.right * (-Radius) * Mathf.Cos(Mathf.PI / 180 * (360 / HoresCount[Level])*A));
+            obj.transform.Rotate(Vector3.up*((360 / HoresCount[Level]) * A + 90));
+            A++;
+        }
+        //objlist[0].transform.Translate(Vector3.forward * (-Radius) * Mathf.Sin(Mathf.PI / 180  *120)+Vector3.right * (-Radius) * Mathf.Cos(Mathf.PI / 180 * 120));
+        //objlist[1].transform.Translate(Vector3.forward * (-Radius) * Mathf.Sin(Mathf.PI / 180 * 240) + Vector3.right * (-Radius) * Mathf.Cos(Mathf.PI / 180 * 240));
+        //objlist[2].transform.Translate(Vector3.forward * (-Radius) * Mathf.Sin(Mathf.PI / 180 * 360) + Vector3.right * (-Radius) * Mathf.Cos(Mathf.PI / 180 * 360));
+
+    }
+
+    public static void AnsList (string name)
+    {
+        Debug.Log(name);
+        if (name != null)
+        {
+
+            if (i >= objlist.Count-1)
+            {
+                i = 0;
+                AnsCover = true;
+            }
+            //若點選超過3個覆蓋最舊的
+            if (AnsCover)
+            {
+                GameObject.Find(AnsArr[i]).GetComponent<SpriteRenderer>().sprite = Resources.Load("Hoertt/hores1", typeof(Sprite)) as Sprite;
+                AnsArr[i] = name;
+            }
+            else
+            {
+                AnsArr.Add(name);
+                
+            }
+
+
+                GameObject.Find(AnsArr[i]).GetComponent<SpriteRenderer>().sprite = Resources.Load("Hoertt/hores2", typeof(Sprite)) as Sprite;
+                i++;
+
+
             
-            
-        //}
-        ////Debug.Log((int)(Mathf.Cos(TimerX) * 100));
-        //transform.position = rPos;
+        }
+
+}
+
+    void ImporTable ()
+    {
+        HoresCount.Add(2);
+        HoresCount.Add(3);
+        HoresCount.Add(4);
+        HoresCount.Add(5);
     }
 }
