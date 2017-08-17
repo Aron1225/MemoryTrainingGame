@@ -67,6 +67,7 @@ Cmd: compileSnippet
 Base path: C:/Program Files/Unity/Editor/Data
 Cmd: initializeCompiler
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Level1_4 finished,Bug fix,optimization Controller,Add GA kit
 =======
 Cmd: preprocess
@@ -124,3 +125,5 @@ Cmd: preprocess
 Cmd: preprocess
   insize=1859 outsize=1049 ok=1
 >>>>>>> merge
+=======
+>>>>>>> t
