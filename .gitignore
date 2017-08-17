@@ -1,17 +1,23 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /[Ll]ibrary/
 >>>>>>> Add files via upload
+=======
+>>>>>>> Update .gitignore
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /Assets/AssetStoreTools*
 >>>>>>> Add files via upload
+=======
+>>>>>>> Update .gitignore
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -39,6 +45,7 @@ sysinfo.txt
 
 # Builds
 *.apk
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 *.unitypackage
@@ -87,3 +94,5 @@ sysinfo.txt
 *.apk
 *.unitypackage
 >>>>>>> ignore
+=======
+>>>>>>> Update .gitignore
