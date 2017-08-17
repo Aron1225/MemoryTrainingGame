@@ -30,7 +30,7 @@ public class GA_FREE_Demo06 : MonoBehaviour
 	// ########################################
 	// Variables
 	// ########################################
-	
+
 	#region Variables
 
 	// Canvas
@@ -64,22 +64,21 @@ public class GA_FREE_Demo06 : MonoBehaviour
 	bool m_Button3_IsOn = false;
 	bool m_Button4_IsOn = false;
 	bool m_Button5_IsOn = false;
-	
+
 	#endregion // Variables
-	
+
 	// ########################################
 	// MonoBehaviour Functions
 	// http://docs.unity3d.com/ScriptReference/MonoBehaviour.html
 	// ########################################
-	
+
 	#region MonoBehaviour
-	
+
 	// Awake is called when the script instance is being loaded.
 	// http://docs.unity3d.com/ScriptReference/MonoBehaviour.Awake.html
 	void Awake ()
 	{
-		if(enabled)
-		{
+		if (enabled) {
 			// Set GUIAnimSystemFREE.Instance.m_AutoAnimation to false in Awake() will let you control all GUI Animator elements in the scene via scripts.
 			GUIAnimSystemFREE.Instance.m_AutoAnimation = false;
 		}
@@ -90,15 +89,15 @@ public class GA_FREE_Demo06 : MonoBehaviour
 	void Start ()
 	{
 		// MoveIn m_TopBar and m_BottomBar
-		m_TopBar.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		m_BottomBar.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_TopBar.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_BottomBar.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		
 		// MoveIn m_Title1 m_Title2
-		StartCoroutine(MoveInTitleGameObjects());
+		StartCoroutine (MoveInTitleGameObjects ());
 
 		// Disable all scene switch buttons
 		// http://docs.unity3d.com/Manual/script-GraphicRaycaster.html
-		GUIAnimSystemFREE.Instance.SetGraphicRaycasterEnable(m_Canvas, false);
+		GUIAnimSystemFREE.Instance.SetGraphicRaycasterEnable (m_Canvas, false);
 	}
 	
 	// Update is called every frame, if the MonoBehaviour is enabled.
@@ -107,349 +106,314 @@ public class GA_FREE_Demo06 : MonoBehaviour
 	{
 		
 	}
-	
+
 	#endregion // MonoBehaviour
-	
+
 	// ########################################
 	// MoveIn/MoveOut functions
 	// ########################################
-	
+
 	#region MoveIn/MoveOut
-	
+
 	// Move In m_Title1 and m_Title2
-	IEnumerator MoveInTitleGameObjects()
+	IEnumerator MoveInTitleGameObjects ()
 	{
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds (1.0f);
 		
 		// Move In m_Title1 and m_Title2
-		m_Title1.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);
-		m_Title2.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);
+		m_Title1.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);
+		m_Title2.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);
 		
 		// MoveIn dialogs
-		StartCoroutine(MoveInPrimaryButtons());
+		StartCoroutine (MoveInPrimaryButtons ());
 
 		// Enable all scene switch buttons
 		// http://docs.unity3d.com/Manual/script-GraphicRaycaster.html
-		GUIAnimSystemFREE.Instance.SetGraphicRaycasterEnable(m_Canvas, true);
+		GUIAnimSystemFREE.Instance.SetGraphicRaycasterEnable (m_Canvas, true);
 	}
 	
 	// MoveIn all primary buttons
-	IEnumerator MoveInPrimaryButtons()
+	IEnumerator MoveInPrimaryButtons ()
 	{
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds (1.0f);
 		
 		// MoveIn all primary buttons
-		m_PrimaryButton1.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);	
-		m_PrimaryButton2.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);	
-		m_PrimaryButton3.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);	
-		m_PrimaryButton4.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);
+		m_PrimaryButton1.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);	
+		m_PrimaryButton2.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);	
+		m_PrimaryButton3.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);	
+		m_PrimaryButton4.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);
 
-		m_PrimaryButton5.MoveIn(GUIAnimSystemFREE.eGUIMove.Self);
+		m_PrimaryButton5.MoveIn (GUIAnimSystemFREE.eGUIMove.Self);
 		
 		// Enable all scene switch buttons
-		StartCoroutine(EnableAllDemoButtons());
+		StartCoroutine (EnableAllDemoButtons ());
 	}
 	
 	// MoveOut all primary buttons
-	public void HideAllGUIs()
+	public void HideAllGUIs ()
 	{
 		// MoveOut all primary buttons
-		m_PrimaryButton1.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		m_PrimaryButton2.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		m_PrimaryButton3.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		m_PrimaryButton4.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		m_PrimaryButton5.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_PrimaryButton1.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_PrimaryButton2.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_PrimaryButton3.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_PrimaryButton4.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_PrimaryButton5.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		
 		// MoveOut all secondary buttons
-		if(m_Button1_IsOn == true)
-			m_SecondaryButton1.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		if(m_Button2_IsOn == true)
-			m_SecondaryButton2.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		if(m_Button3_IsOn == true)
-			m_SecondaryButton3.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		if(m_Button4_IsOn == true)
-			m_SecondaryButton4.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		if(m_Button5_IsOn == true)
-			m_SecondaryButton5.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		if (m_Button1_IsOn == true)
+			m_SecondaryButton1.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		if (m_Button2_IsOn == true)
+			m_SecondaryButton2.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		if (m_Button3_IsOn == true)
+			m_SecondaryButton3.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		if (m_Button4_IsOn == true)
+			m_SecondaryButton4.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		if (m_Button5_IsOn == true)
+			m_SecondaryButton5.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		
 		// MoveOut m_Title1 and m_Title2
-		StartCoroutine(HideTitleTextMeshes());
+		StartCoroutine (HideTitleTextMeshes ());
 	}
 	
 	// MoveOut m_Title1 and m_Title2
-	IEnumerator HideTitleTextMeshes()
+	IEnumerator HideTitleTextMeshes ()
 	{
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds (1.0f);
 		
 		// MoveOut m_Title1 and m_Title2
-		m_Title1.MoveOut(GUIAnimSystemFREE.eGUIMove.Self);
-		m_Title2.MoveOut(GUIAnimSystemFREE.eGUIMove.Self);
+		m_Title1.MoveOut (GUIAnimSystemFREE.eGUIMove.Self);
+		m_Title2.MoveOut (GUIAnimSystemFREE.eGUIMove.Self);
 		
 		// MoveOut m_TopBar and m_BottomBar
-		m_TopBar.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		m_BottomBar.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_TopBar.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		m_BottomBar.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 	}
-	
+
 	#endregion // MoveIn/MoveOut
-	
+
 	// ########################################
 	// Enable/Disable button functions
 	// ########################################
-	
+
 	#region Enable/Disable buttons
-	
+
 	// Enable/Disable all scene switch Coroutine
-	IEnumerator EnableAllDemoButtons()
+	IEnumerator EnableAllDemoButtons ()
 	{
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds (1.0f);
 
 		// Enable all scene switch buttons
 		// http://docs.unity3d.com/Manual/script-GraphicRaycaster.html
-		GUIAnimSystemFREE.Instance.SetGraphicRaycasterEnable(m_Canvas, true);
+		GUIAnimSystemFREE.Instance.SetGraphicRaycasterEnable (m_Canvas, true);
 	}
 
 	// Disable all buttons for a few seconds
-	IEnumerator DisableAllButtonsForSeconds(float DisableTime)
+	IEnumerator DisableAllButtonsForSeconds (float DisableTime)
 	{
 		// Disable all buttons
-		GUIAnimSystemFREE.Instance.EnableAllButtons(false);
+		GUIAnimSystemFREE.Instance.EnableAllButtons (false);
 		
-		yield return new WaitForSeconds(DisableTime);
+		yield return new WaitForSeconds (DisableTime);
 		
 		// Enable all buttons
-		GUIAnimSystemFREE.Instance.EnableAllButtons(true);
+		GUIAnimSystemFREE.Instance.EnableAllButtons (true);
 	}
-	
+
 	#endregion // Enable/Disable buttons
-	
+
 	// ########################################
 	// UI Responder functions
 	// ########################################
-	
+
 	#region UI Responder
-	
-	public void OnButton_1()
+
+	public void OnButton_1 ()
 	{
 		// Disable all buttons for a few seconds
-		StartCoroutine(DisableAllButtonsForSeconds(0.6f));
+		StartCoroutine (DisableAllButtonsForSeconds (0.6f));
 
 		// Toggle m_Button1
-		ToggleButton_1();
+		ToggleButton_1 ();
 		
 		// Toggle other buttons
-		if(m_Button2_IsOn==true)
-		{
-			ToggleButton_2();
+		if (m_Button2_IsOn == true) {
+			ToggleButton_2 ();
 		}
-		if(m_Button3_IsOn==true)
-		{
-			ToggleButton_3();
+		if (m_Button3_IsOn == true) {
+			ToggleButton_3 ();
 		}
-		if(m_Button4_IsOn==true)
-		{
-			ToggleButton_4();
+		if (m_Button4_IsOn == true) {
+			ToggleButton_4 ();
 		}
-		if(m_Button5_IsOn==true)
-		{
-			ToggleButton_5();
+		if (m_Button5_IsOn == true) {
+			ToggleButton_5 ();
 		}
 	}
-	
-	public void OnButton_2()
+
+	public void OnButton_2 ()
 	{
 		// Disable all buttons for a few seconds
-		StartCoroutine(DisableAllButtonsForSeconds(0.6f));
+		StartCoroutine (DisableAllButtonsForSeconds (0.6f));
 
 		// Toggle m_Button2
-		ToggleButton_2();
+		ToggleButton_2 ();
 		
 		// Toggle other buttons
-		if(m_Button1_IsOn==true)
-		{
-			ToggleButton_1();
+		if (m_Button1_IsOn == true) {
+			ToggleButton_1 ();
 		}
-		if(m_Button3_IsOn==true)
-		{
-			ToggleButton_3();
+		if (m_Button3_IsOn == true) {
+			ToggleButton_3 ();
 		}
-		if(m_Button4_IsOn==true)
-		{
-			ToggleButton_4();
+		if (m_Button4_IsOn == true) {
+			ToggleButton_4 ();
 		}
-		if(m_Button5_IsOn==true)
-		{
-			ToggleButton_5();
+		if (m_Button5_IsOn == true) {
+			ToggleButton_5 ();
 		}
 	}
-	
-	public void OnButton_3()
+
+	public void OnButton_3 ()
 	{
 		// Disable all buttons for a few seconds
-		StartCoroutine(DisableAllButtonsForSeconds(0.6f));
+		StartCoroutine (DisableAllButtonsForSeconds (0.6f));
 
 		// Toggle m_Button3
-		ToggleButton_3();
+		ToggleButton_3 ();
 		
 		// Toggle other buttons
-		if(m_Button1_IsOn==true)
-		{
-			ToggleButton_1();
+		if (m_Button1_IsOn == true) {
+			ToggleButton_1 ();
 		}
-		if(m_Button2_IsOn==true)
-		{
-			ToggleButton_2();
+		if (m_Button2_IsOn == true) {
+			ToggleButton_2 ();
 		}
-		if(m_Button4_IsOn==true)
-		{
-			ToggleButton_4();
+		if (m_Button4_IsOn == true) {
+			ToggleButton_4 ();
 		}
-		if(m_Button5_IsOn==true)
-		{
-			ToggleButton_5();
+		if (m_Button5_IsOn == true) {
+			ToggleButton_5 ();
 		}
 	}
-	
-	public void OnButton_4()
+
+	public void OnButton_4 ()
 	{
 		// Disable all buttons for a few seconds
-		StartCoroutine(DisableAllButtonsForSeconds(0.6f));
+		StartCoroutine (DisableAllButtonsForSeconds (0.6f));
 
 		// Toggle m_Button4
-		ToggleButton_4();
+		ToggleButton_4 ();
 		
 		// Toggle other buttons
-		if(m_Button1_IsOn==true)
-		{
-			ToggleButton_1();
+		if (m_Button1_IsOn == true) {
+			ToggleButton_1 ();
 		}
-		if(m_Button2_IsOn==true)
-		{
-			ToggleButton_2();
+		if (m_Button2_IsOn == true) {
+			ToggleButton_2 ();
 		}
-		if(m_Button3_IsOn==true)
-		{
-			ToggleButton_3();
+		if (m_Button3_IsOn == true) {
+			ToggleButton_3 ();
 		}
-		if(m_Button5_IsOn==true)
-		{
-			ToggleButton_5();
+		if (m_Button5_IsOn == true) {
+			ToggleButton_5 ();
 		}
 	}
-	
-	public void OnButton_5()
+
+	public void OnButton_5 ()
 	{
 		// Disable all buttons for a few seconds
-		StartCoroutine(DisableAllButtonsForSeconds(0.6f));
+		StartCoroutine (DisableAllButtonsForSeconds (0.6f));
 
 		// Toggle m_Button5
-		ToggleButton_5();
+		ToggleButton_5 ();
 		
 		// Toggle other buttons
-		if(m_Button1_IsOn==true)
-		{
-			ToggleButton_1();
+		if (m_Button1_IsOn == true) {
+			ToggleButton_1 ();
 		}
-		if(m_Button2_IsOn==true)
-		{
-			ToggleButton_2();
+		if (m_Button2_IsOn == true) {
+			ToggleButton_2 ();
 		}
-		if(m_Button3_IsOn==true)
-		{
-			ToggleButton_3();
+		if (m_Button3_IsOn == true) {
+			ToggleButton_3 ();
 		}
-		if(m_Button4_IsOn==true)
-		{
-			ToggleButton_4();
+		if (m_Button4_IsOn == true) {
+			ToggleButton_4 ();
 		}
 	}
-	
+
 	#endregion // UI Responder
-	
+
 	// ########################################
 	// Toggle button functions
 	// ########################################
-	
+
 	#region Toggle Button
-	
+
 	// Toggle m_Button1
-	void ToggleButton_1()
+	void ToggleButton_1 ()
 	{
 		m_Button1_IsOn = !m_Button1_IsOn;
-		if(m_Button1_IsOn==true)
-		{
+		if (m_Button1_IsOn == true) {
 			// MoveIn m_SecondaryButton1
-			m_SecondaryButton1.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		}
-		else
-		{
+			m_SecondaryButton1.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		} else {
 			// MoveOut m_SecondaryButton1
-			m_SecondaryButton1.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+			m_SecondaryButton1.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		}
 	}
 	
 	// Toggle m_Button2
-	void ToggleButton_2()
+	void ToggleButton_2 ()
 	{
 		m_Button2_IsOn = !m_Button2_IsOn;
-		if(m_Button2_IsOn==true)
-		{
+		if (m_Button2_IsOn == true) {
 			// MoveIn m_SecondaryButton2
-			m_SecondaryButton2.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		}
-		else
-		{
+			m_SecondaryButton2.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		} else {
 			// MoveOut m_SecondaryButton2
-			m_SecondaryButton2.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+			m_SecondaryButton2.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		}
 	}
 	
 	// Toggle m_Button3
-	void ToggleButton_3()
+	void ToggleButton_3 ()
 	{
 		m_Button3_IsOn = !m_Button3_IsOn;
-		if(m_Button3_IsOn==true)
-		{
+		if (m_Button3_IsOn == true) {
 			// MoveIn m_SecondaryButton3
-			m_SecondaryButton3.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		}
-		else
-		{
+			m_SecondaryButton3.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		} else {
 			// MoveOut m_SecondaryButton3
-			m_SecondaryButton3.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+			m_SecondaryButton3.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		}
 	}
 	
 	// Toggle m_Button4
-	void ToggleButton_4()
+	void ToggleButton_4 ()
 	{
 		m_Button4_IsOn = !m_Button4_IsOn;
-		if(m_Button4_IsOn==true)
-		{
+		if (m_Button4_IsOn == true) {
 			// MoveIn m_SecondaryButton4
-			m_SecondaryButton4.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		}
-		else
-		{
+			m_SecondaryButton4.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		} else {
 			// MoveOut m_SecondaryButton4
-			m_SecondaryButton4.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+			m_SecondaryButton4.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		}
 	}
 	
 	// Toggle m_Button5
-	void ToggleButton_5()
+	void ToggleButton_5 ()
 	{
 		m_Button5_IsOn = !m_Button5_IsOn;
-		if(m_Button5_IsOn==true)
-		{
+		if (m_Button5_IsOn == true) {
 			// MoveIn m_SecondaryButton5
-			m_SecondaryButton5.MoveIn(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-		}
-		else
-		{
+			m_SecondaryButton5.MoveIn (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+		} else {
 			// MoveOut m_SecondaryButton5
-			m_SecondaryButton5.MoveOut(GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+			m_SecondaryButton5.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
 		}
 	}
-	
+
 	#endregion // Toggle Button
 }

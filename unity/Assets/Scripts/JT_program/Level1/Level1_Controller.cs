@@ -12,12 +12,15 @@ public class Level1_Controller:MonoBehaviour
 
 	Level1_UI UI;
 	Level1_DB DB;
+	GA_Controller GA;
 
-	TweenPosition Billboard;
-	TweenPosition Wrong;
-	TweenPosition uiTimeOut;
-	TweenPosition UI_Select_Level;
-	TweenPosition UI_Slider_Level;
+	//TweenPosition..................
+
+	TweenPosition TP_Billboard;
+	TweenPosition TP_Wrong;
+	TweenPosition TP_TimeOut;
+	TweenPosition TP_Select_Level;
+	TweenPosition TP_Slider_Level;
 
 	//Coroutine........................
 
@@ -27,7 +30,6 @@ public class Level1_Controller:MonoBehaviour
 
 	//bool.............................
 
-	//	private bool End;
 	//避免IfTheEnd()與Feedback()同時執行
 	private bool Suppress_Feedback;
 
@@ -51,10 +53,30 @@ public class Level1_Controller:MonoBehaviour
 	//每增加難度亮燈減少的時間
 	private float interval;
 
+
+	//Getter...........................
+
+	//是否TimeOut
+	public bool IfTimeOut{ get { return DB.TimeOut; } }
+
+	//是否開始
+	public bool start{ get { return DB.start; } }
+
+	//選單數字
+	public int Select_Level_number{ get { return DB.Select_Level_number; } }
+
+	//Setter..........................
+
+	//亂數
+	public int random{ set { DB.random = value; } }
+
+	//Mono.............................
+
 	void Awake ()
 	{
 		UI = GetComponent<Level1_UI> ();
-		DB = GetComponent<Level1_DB> (); 
+		DB = GetComponent<Level1_DB> ();
+		GA = GetComponent<GA_Controller> ();
 		Init ();
 	}
 
@@ -67,6 +89,8 @@ public class Level1_Controller:MonoBehaviour
 	{
 		
 	}
+
+	//IEnumerator.........................
 
 	//紀錄時間
 	IEnumerator _RecordTime ()
@@ -111,41 +135,145 @@ public class Level1_Controller:MonoBehaviour
 		}	
 	}
 
+	//UFO的建置與設定位置
+	public IEnumerator _LevelManagement (List<Vector3> map, bool IgnoreBalanceIsZero = false)
+	{
+		///關卡設定
+		DisplaySliderBar ();//更新難度條
+
+		Balance (map, IgnoreBalanceIsZero);//依關卡數量生出UFO、設定UFO位置
+
+		yield break;
+	}
+
+	//亂數
+	public IEnumerator _MakeRandom ()
+	{
+		int key = DB.random;//key->需要幾個亂數
+
+		//清空
+		Level1_DB.UFO_Random.Clear ();
+
+		List<UFO> TempList = Level1_DB.UFOList.ToList ();
+
+		for (int i = 0; i < key; i++) {
+			int num = UnityEngine.Random.Range (0, TempList.Count);
+			Level1_DB.UFO_Random.Add (TempList [num]);
+			TempList [num] = TempList [TempList.Count - 1];
+			TempList.RemoveAt (TempList.Count - 1);
+		}
+
+		yield break;
+	}
+
+	//顯示亂數
+	public IEnumerator _ShowLight ()
+	{
+		//當陣列全部等於false時執行
+		yield return DB.WaitUntilUFOReady;
+
+		yield return DB.WaitOneSecond;
+
+		var last = Level1_DB.UFO_Random.Last ();
+
+		foreach (var ufo in Level1_DB.UFO_Random) {
+
+			ufo.Red ();
+
+			yield return new WaitForSeconds (DB.lighttime);
+
+			ufo.Original (false);
+
+			//當走訪至最後時跳出迴圈
+			if (ufo == last)
+				break;
+
+			yield return new WaitForSeconds (DB.darktime);
+		}
+	}
+
+	//比對答案
+	public IEnumerator _AnswerCompare ()
+	{
+		//清空
+		Level1_DB.UFO.Clear ();
+
+		//開啟點擊
+		UFO.AllColliderEnabled (true);
+
+		int RandomCount = Level1_DB.UFO_Random.Count;
+
+		CountDownStart ();//30秒到數
+
+		while (DB.Compare) {
+			//UFO數量到達時判斷
+			if (RandomCount == Level1_DB.UFO.Count) {
+
+				//關閉點擊
+				UFO.AllColliderEnabled (false);
+
+				DB.LevelUP = Compare (Level1_DB.UFO, Level1_DB.UFO_Random);
+
+				showResults (DB.LevelUP);
+
+				Record (DB.LevelUP);
+
+				ResetTimeOutCount ();//只要有作答TimeOutCount就歸零
+
+				break;//跳出while迴圈
+			}
+			yield return null;//等待下一幀
+		}
+		yield return DB.WaitOneSecond;
+	}
+
+	//重置
+	public IEnumerator _Reset ()
+	{
+		Level1_DB.UFOList.ForEach (go => go.Original (false));
+		DB.Compare = true;
+		DB.start = true;
+		yield break;
+	}
+
 	//public..................................................................
 
 	//遊戲結束,完成遊戲後顯示資訊
 	public void Finish ()
 	{	
 		Suppress_Feedback = true;//壓制Feedback()執行
-		StopCoroutine (RecordTime);//計時停止
+		StopAllCoroutines ();
+//		StopCoroutine (RecordTime);//計時停止
 		UI_Finish ();//顯示所有資訊
 		DisplayPercent ();//答對率
 		DisplayTime (time);//時間
 		DisplayScore ();//統計
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
+		GA.HideAllGUIs ();
 	}
 
 	//錯誤9次
 	public void GameOver ()
 	{
-		StopCoroutine (RecordTime);//計時停止
+		StopAllCoroutines ();
+//		StopCoroutine (RecordTime);//計時停止
 		UI_GameOver ();
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
+		GA.HideAllGUIs ();
 	}
 
 	//遊戲閒置
 	public void TimeOut ()
 	{
-		StopCoroutine (RecordTime);//計時停止
+		StopAllCoroutines ();
+//		StopCoroutine (RecordTime);//計時停止
 		UI_TimeOut ();
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
+		GA.HideAllGUIs ();
 	}
 
-	//閒置倒數
-	public void CountDownStart ()
-	{
-		CountDown = StartCoroutine (_CountDown ());	
-	}
+
+	//SliderBar.....................................
 
 	//設定SliderBar
 	public void DisplaySliderBar ()
@@ -160,17 +288,7 @@ public class Level1_Controller:MonoBehaviour
 		UI.slider_level.value = increase ();
 	}
 
-	//是否TimeOut
-	public bool IfTimeOut ()
-	{
-		return DB.TimeOut;
-	}
-
-	//	//難度提升
-	//	public void LevelUp ()
-	//	{
-	//		ReduceLightTime ();//亮燈時間減少
-	//	}
+	//Feedback..........................................
 
 	//回饋,連錯3題增加亮燈時間,再錯3題減少random數,再錯3題返回上一關
 	public bool Feedback (bool result)
@@ -192,7 +310,7 @@ public class Level1_Controller:MonoBehaviour
 			} 
 
 			if (feedbackCount == 6) {
-				DB.random = Mathf.Clamp (DB.random--, 2, 10);
+				DB.random = Mathf.Clamp (DB.random - 1, 2, 10);
 			}
 
 			if (feedbackCount == 9) {
@@ -202,58 +320,51 @@ public class Level1_Controller:MonoBehaviour
 		return bo;
 	}
 
-	//創造旋轉群組
-	public GameObject CreateGroup (Transform parent)//parent->RotationGroup物件的parent
+	public bool Feedback ()
 	{
-		GameObject go = new GameObject ("G" + DB.RotationGroup_Index++);
-	
-		go.transform.parent = parent;
-	
-		go.transform.localScale = Vector3.one;
-	
-		Level1_RotationFix rf = go.AddComponent<Level1_RotationFix> ();
-	
-		rf.Group = go;
-	
-		rf.direction = dir *= -1;
-	
-		DB.RotationGroup.Add (rf);
-	
-		return go;
-	}
+		bool bo = false;
+		//避免IfTheEnd()與Feedback()同時執行
+		if (!Suppress_Feedback) {
 
-	//移除整個RotationGroup物件，並移除所有子物件(UFO)
-	public void DestoryGroup (Level1_RotationFix rf)
-	{
-		UFO.DestroyUFO (rf.transform.childCount);
-		MonoBehaviour.Destroy (rf.gameObject, 0.5f);
-		DB.RotationGroup_Index--;
-	}
+			if (DB.LevelUP) {
+				feedbackCount = 0;
+				return false;
+			} 
 
-	//UFO排列圖座標陣列
-	public void LoadMap (string map)
-	{
-		//分隔符
-		string[] split_char = { "\n", "\r" };
-		//所有字串
-		string[] lines = map.Trim ().Split (split_char, System.StringSplitOptions.RemoveEmptyEntries);
+			feedbackCount++;
 
-		int p1 = 1;
+			if (feedbackCount == 3) {
+				DB.lighttime = Mathf.Clamp (DB.lighttime + 0.5f, 0.1f, 2f);
+				DB.darktime = Mathf.Clamp (DB.darktime + 0.5f, 0.1f, 2f);
+			} 
 
-		for (int i = 0; i < lines.Length; i++) {
-			//以,#分隔
-			string[] parts = lines [i].Split ("," [0], "#" [0]);
-
-			if (p1 != int.Parse (parts [0])) {
-
-				DB.arrangement.Add (new List<Vector3> ());
-
-				p1 = int.Parse (parts [0]);
+			if (feedbackCount == 6) {
+				DB.random = Mathf.Clamp (DB.random - 1, 2, 10);
 			}
-			//加入座標
-			DB.arrangement [int.Parse (parts [0])].Add (new Vector3 (float.Parse (parts [1]), float.Parse (parts [2]), float.Parse (parts [3])));
+
+			if (feedbackCount == 9) {
+				bo = true;
+			}
 		}
+		return bo;
 	}
+
+
+	//有關閒置部分...................................
+
+	//閒置倒數
+	public void CountDownStart ()
+	{
+		CountDown = StartCoroutine (_CountDown ());	
+	}
+
+	//TimeOutCount歸零
+	public void ResetTimeOutCount ()
+	{
+		TimeOutCount = 0;
+	}
+
+	//作答部分.......................................
 
 	// 紀錄對錯次數
 	public void Record (bool result)
@@ -262,12 +373,6 @@ public class Level1_Controller:MonoBehaviour
 			DB.BingoCount++;
 		else
 			DB.ErrorCount++;
-	}
-
-	//TimeOutCount歸零
-	public void ResetTimeOutCount ()
-	{
-		TimeOutCount = 0;
 	}
 
 	//顯示答對錯Icon
@@ -295,9 +400,16 @@ public class Level1_Controller:MonoBehaviour
 		}
 		return result;
 	}
+		
+	//Get..........................................
+
+	public List<Vector3> Get_arrangement (int index)
+	{
+		return DB.arrangement [index];
+	}
 
 	//取得指定範圍地圖陣列(mapRange1,mapRange2)
-	public List<List<Vector3>> GetMapRange (int mapRange1, int mapRange2)
+	public List<List<Vector3>> Get_MapRange (int mapRange1, int mapRange2)
 	{
 		List<List<Vector3>> map = new List<List<Vector3>> ();
 
@@ -308,36 +420,119 @@ public class Level1_Controller:MonoBehaviour
 		return map;
 	}
 
-	//預測下一次是否結束遊戲
-	public bool IfTheEnd (int LevelCount, int Loop)
+	//旋轉群組.........................................
+
+	//創造旋轉群組
+	public GameObject CreateGroup (Transform parent)//parent->RotationGroup物件的parent
 	{
-		if (LevelCount++ != Loop)
-			return false;
+		GameObject go = new GameObject ("G" + DB.RotationGroup_Index++);
 
-		if ((DB.Select_Level_number) != DB.TOTAL_LEVEL)
-			return false;
+		go.transform.parent = parent;
 
-		Finish ();
-		//壓制Feedback()執行
-		Suppress_Feedback = true;
+		go.transform.localScale = Vector3.one;
 
-		return true;
+		Level1_RotationFix rf = go.AddComponent<Level1_RotationFix> ();
+
+		rf.Group = go;
+
+		rf.direction = dir *= -1;
+
+		DB.RotationGroup.Add (rf);
+
+		return go;
 	}
 
-	//預測下一次是否結束遊戲
-	public bool IfTheEnd (Func<bool> TheEnd)
+	//移除整個RotationGroup物件，並移除所有子物件(UFO)
+	public void DestoryGroup (Level1_RotationFix rf)
 	{
-		if (!TheEnd ())
-			return false;
-
-		Finish ();
-		//壓制Feedback()執行
-		Suppress_Feedback = true;
-
-		return true;
+		UFO.DestroyUFO (rf.transform.childCount);
+		MonoBehaviour.Destroy (rf.gameObject, 0.5f);
+		DB.RotationGroup_Index--;
 	}
 
+	//GA(GUI Animator)外掛套件.................................
 
+	public void GA_LevelMenu ()
+	{
+		StopAllCoroutines ();
+		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
+		resetParameter ();//參數初始
+		UI_GA_LevelMenu ();
+		GA.HideAllGUIs ();
+	}
+
+	//回到主畫面
+	public void GA_BackHome ()
+	{
+		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (0);
+	}
+
+	public void GA_Again ()
+	{
+		StopAllCoroutines ();
+		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
+		resetParameter ();//參數初始
+		StartGameLoop (this.gameObject);
+		ControllerStart ();
+	}
+
+	//map..............................................
+
+	//UFO排列圖座標陣列
+	public void LoadMap (string map)
+	{
+		//分隔符
+		string[] split_char = { "\n", "\r" };
+		//所有字串
+		string[] lines = map.Trim ().Split (split_char, System.StringSplitOptions.RemoveEmptyEntries);
+
+		int p1 = 1;
+
+		for (int i = 0; i < lines.Length; i++) {
+			//以,#分隔
+			string[] parts = lines [i].Split ("," [0], "#" [0]);
+
+			if (p1 != int.Parse (parts [0])) {
+
+				DB.arrangement.Add (new List<Vector3> ());
+
+				p1 = int.Parse (parts [0]);
+			}
+			//加入座標
+			DB.arrangement [int.Parse (parts [0])].Add (new Vector3 (float.Parse (parts [1]), float.Parse (parts [2]), float.Parse (parts [3])));
+		}
+	}
+
+	//Legacy............................................
+
+	//	//預測下一次是否結束遊戲
+	//	public bool IfTheEnd (int LevelCount, int Loop)
+	//	{
+	//		if (LevelCount++ != Loop)
+	//			return false;
+	//
+	//		if ((DB.Select_Level_number) != DB.TOTAL_LEVEL)
+	//			return false;
+	//
+	//		Finish ();
+	//		//壓制Feedback()執行
+	//		Suppress_Feedback = true;
+	//
+	//		return true;
+	//	}
+	//
+	//	//預測下一次是否結束遊戲
+	//	public bool IfTheEnd (Func<bool> TheEnd)
+	//	{
+	//		if (!TheEnd ())
+	//			return false;
+	//
+	//		Finish ();
+	//		//壓制Feedback()執行
+	//		Suppress_Feedback = true;
+	//
+	//		return true;
+	//	}
 
 	//private..................................................................
 
@@ -375,6 +570,26 @@ public class Level1_Controller:MonoBehaviour
 		tmp_darkTime = DB.darktime;
 	}
 
+	private void Balance (List<Vector3> map, bool IgnoreBalanceIsZero = false)
+	{
+		var Balance = Level1_DB.UFOList.Count - map.Count;//多(少)幾台
+
+		//extra
+		if (Balance > 0) {
+			UFO.DestroyUFO (Balance);//Destroy幾台
+		}
+
+		//lack
+		if (Balance < 0) {
+			UFO.InstantiateUFOs (Mathf.Abs (Balance));//實例化UFO
+		} 
+
+		//重設場上所有UFO座標
+		if (!DB.start || !IgnoreBalanceIsZero)
+			for (int i = 0; i < map.Count; i++)
+				Level1_DB.UFOList [i].moveTo (1f, map [i], true, 0.1f);
+	}
+
 	//Controller開始設置
 	private void ControllerStart ()
 	{
@@ -382,74 +597,13 @@ public class Level1_Controller:MonoBehaviour
 		setLightTime ();//選完難度後設定關卡參數
 	}
 
-	//Button......................................
-
-	//遊戲開始
-	private void GameStart (GameObject go)
+	///更新遊戲畫面上的數字
+	private void Updated ()
 	{
-		StartGameLoop (go);
-		ControllerStart ();
-		UI_GameStart ();
+		UI.Label_Level.text = DB.Select_Level_number.ToString ();
 	}
 
-	//下一關
-	private void NextLevel (GameObject go)
-	{
-		Next ();
-		resetParameter ();//參數初始
-		StartGameLoop (go);
-		ControllerStart ();
-		UI_NextLevel ();
-	}
-
-	private void Next ()
-	{
-//		if (DB.Select_Level_number >= 9)
-//			DB.Select_Level_number += 2;
-//		else
-		DB.Select_Level_number++;
-		UI.Label_Level.text = (int.Parse (UI.Label_Level.text) + 1).ToString ();
-	}
-
-	//上一關
-	private void BackLevel (GameObject go)
-	{
-		Back ();
-		resetParameter ();//參數初始
-		StartGameLoop (go);
-		ControllerStart ();
-		UI_BackLevel ();
-	}
-
-	private void Back ()
-	{ 
-		DB.Select_Level_number = Mathf.Max (1, DB.Select_Level_number--);
-		UI.Label_Level.text = (Mathf.Max (1, (int.Parse (UI.Label_Level.text) - 1))).ToString ();
-	}
-
-	//再玩一次
-	private void Again (GameObject go)
-	{
-		resetParameter ();//參數初始
-		StartGameLoop (go);
-		ControllerStart ();
-		UI_Again ();
-	}
-		
-	//回到選擇難度
-	private void LevelMenu (GameObject go)
-	{
-		resetParameter ();//參數初始
-		UI_LevelMenu ();
-	}
-
-	//回到主畫面
-	private void BackHome (GameObject go)
-	{
-		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (0);
-	}
-
-	//When the game is over...........................
+	//遊戲結束後UI的觸發動作............................
 
 	//顯示所有資訊
 	private void UI_Finish ()
@@ -476,6 +630,87 @@ public class Level1_Controller:MonoBehaviour
 		UI_Slider_Level_dir (false);
 	}
 
+
+	//GA套件的UI的觸發動作.........................
+
+	void UI_GA_LevelMenu ()
+	{
+		UI_Select_Level_dir (false);
+		UI_Slider_Level_dir (false);
+	}
+
+	//Button......................................
+
+	//遊戲開始
+	private void GameStart (GameObject go)
+	{
+		StartGameLoop (go);
+		ControllerStart ();
+		UI_GameStart ();
+		GA.start ();//MoveIn GA套件
+	}
+
+	//下一關
+	private void NextLevel (GameObject go)
+	{
+		Next ();
+		resetParameter ();//參數初始
+		StartGameLoop (go);
+		ControllerStart ();
+		UI_NextLevel ();
+		GA.start ();//MoveIn GA套件
+	}
+
+	//上一關
+	private void BackLevel (GameObject go)
+	{
+		Back ();
+		resetParameter ();//參數初始
+		StartGameLoop (go);
+		ControllerStart ();
+		UI_BackLevel ();
+		GA.start ();//MoveIn GA套件
+	}
+
+	//再玩一次
+	private void Again (GameObject go)
+	{
+		resetParameter ();//參數初始
+		StartGameLoop (go);
+		ControllerStart ();
+		UI_Again ();
+		GA.start ();//MoveIn GA套件
+	}
+
+	//回到選擇難度
+	private void LevelMenu (GameObject go)
+	{
+		resetParameter ();//參數初始
+		UI_LevelMenu ();
+	}
+
+	//回到主畫面
+	private void BackHome (GameObject go)
+	{
+		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (0);
+	}
+
+	//Button附帶方法...............................
+
+	private void Next ()
+	{
+		DB.Select_Level_number++;
+		Updated ();
+//		UI.Label_Level.text = (int.Parse (UI.Label_Level.text) + 1).ToString ();
+	}
+
+	private void Back ()
+	{ 
+//		DB.Select_Level_number = Mathf.Max (1, DB.Select_Level_number--);
+//		UI.Label_Level.text = (Mathf.Max (1, (int.Parse (UI.Label_Level.text) - 1))).ToString ();
+		DB.Select_Level_number = Mathf.Clamp (DB.Select_Level_number - 1, 1, 10);
+		Updated ();
+	}
 
 	//When Button CLick.............................
 
@@ -511,75 +746,122 @@ public class Level1_Controller:MonoBehaviour
 
 	//UI direction................................
 
-
-	public void UI_Billboard_dir (bool Forward)
-	{
-		UI.Billboard.SetActive (true);
-		if (Forward) {
-			Billboard = TweenPosition.Begin (UI.Billboard, 0.6f, new Vector3 (0, -34, 0));
-			Billboard.delay = 0;
-		} else {
-			Billboard.PlayReverse ();
-			EventDelegate.Add (Billboard.onFinished, () => UI.Billboard.SetActive (false), true);
-		}
-	}
-
 	private void UI_Select_Level_dir (bool Forward)
 	{
-		if (Forward) {
-			UI_Select_Level = TweenPosition.Begin (UI.UI_Select_Level, 0.6f, new Vector3 (0, -780, 0));
-			UI_Select_Level.delay = 0;
-		} else
-			UI_Select_Level.PlayReverse ();
+//		if (Forward) {
+//			TP_Select_Level = TweenPosition.Begin (UI.UI_Select_Level, 0.6f, new Vector3 (0, -780, 0));
+//			TP_Select_Level.delay = 0;
+//		} else
+//			TP_Select_Level.PlayReverse ();
+		UI_dir (Forward, false, UI.UI_Select_Level, ref TP_Select_Level, 0.6f, new Vector3 (0, -780, 0));
+	}
+
+	private void UI_Billboard_dir (bool Forward)
+	{
+//		UI.Billboard.SetActive (true);
+//		if (Forward) {
+//			TP_Billboard = TweenPosition.Begin (UI.Billboard, 0.6f, new Vector3 (0, -34, 0));
+//			TP_Billboard.delay = 0;
+//		} else {
+//			TP_Billboard.PlayReverse ();
+//			EventDelegate.Add (TP_Billboard.onFinished, () => UI.Billboard.SetActive (false), true);
+//		}
+		UI_dir (Forward, true, UI.Billboard, ref TP_Billboard, 0.6f, new Vector3 (0, -34, 0));
 	}
 
 	private void UI_Slider_Level_dir (bool Forward)
 	{
-		if (Forward) {
-			UI_Slider_Level = TweenPosition.Begin (UI.UI_Slider_Level, 1f, new Vector3 (-535, -146, 0));
-			UI_Slider_Level.delay = 0;
-		} else
-			UI_Slider_Level.PlayReverse ();
+//		if (Forward) {
+//			TP_Slider_Level = TweenPosition.Begin (UI.UI_Slider_Level, 1f, new Vector3 (-535, -146, 0));
+//			TP_Slider_Level.delay = 0;
+//		} else
+//			TP_Slider_Level.PlayReverse ();
+		UI_dir (Forward, true, UI.UI_Slider_Level, ref TP_Slider_Level, 1f, new Vector3 (-535, -146, 0));
 	}
 
-	public void UI_Wrong_dir (bool Forward)
+	private void UI_Wrong_dir (bool Forward)
 	{
-		UI.Wrong.SetActive (true);//顯示錯誤連篇資訊
-
-		if (Forward) {
-			Wrong = TweenPosition.Begin (UI.Wrong, 0.6f, new Vector3 (0, -34, 0));
-			Wrong.delay = 0;
-		} else {
-			Wrong.PlayReverse ();
-			EventDelegate.Add (Wrong.onFinished, () => UI.Wrong.SetActive (false), true);
-		}
+//		UI.Wrong.SetActive (true);//顯示錯誤連篇資訊
+//
+//		if (Forward) {
+//			TP_Wrong = TweenPosition.Begin (UI.Wrong, 0.6f, new Vector3 (0, -34, 0));
+//			TP_Wrong.delay = 0;
+//		} else {
+//			TP_Wrong.PlayReverse ();
+//			EventDelegate.Add (TP_Wrong.onFinished, () => UI.Wrong.SetActive (false), true);
+//		}
+		UI_dir (Forward, false, UI.Wrong, ref TP_Wrong, 0.6f, new Vector3 (0, -34, 0));
 	}
 
 	private void UI_TimeOut_dir (bool Forward)
 	{
-		UI.TimeOut.SetActive (true);
+//		UI.TimeOut.SetActive (true);
+//
+//		if (Forward) {
+//			TP_TimeOut = TweenPosition.Begin (UI.TimeOut, 0.6f, new Vector3 (0, -34, 0));
+//			TP_TimeOut.delay = 0;
+//		} else {
+//			TP_TimeOut.PlayReverse ();
+//			EventDelegate.Add (TP_TimeOut.onFinished, () => UI.TimeOut.SetActive (false), true);
+//		}
+		UI_dir (Forward, false, UI.TimeOut, ref TP_TimeOut, 0.6f, new Vector3 (0, -34, 0));
+	}
+
+	private void UI_dir (bool Forward, bool hidden, GameObject go, ref TweenPosition TP, float duration, Vector3 pos)
+	{
+		go.SetActive (true);
 
 		if (Forward) {
-			uiTimeOut = TweenPosition.Begin (UI.TimeOut, 0.6f, new Vector3 (0, -34, 0));
-			uiTimeOut.delay = 0;
+			if (TP == null)
+				TP = TweenPosition.Begin (go, duration, pos);
+			else
+				TP.PlayForward ();
+			TP.delay = 0;
 		} else {
-			uiTimeOut.PlayReverse ();
-			EventDelegate.Add (uiTimeOut.onFinished, () => UI.TimeOut.SetActive (false), true);
+			TP.PlayReverse ();
+			//結束後隱藏
+			if (hidden) {
+
+				EventDelegate eventDelegate = new EventDelegate (this, "hidden");  
+
+				eventDelegate.parameters [0] = new EventDelegate.Parameter (TP);
+
+				EventDelegate.Add (TP.onFinished, eventDelegate, true);//oneshot=true
+			}
 		}
 	}
+
+	//隱藏
+	private void hidden (TweenPosition TP)
+	{
+		TP.gameObject.SetActive (false);
+	}
+
+	//UIEventListener...................................
 
 	//事件監聽
 	private void ButtonEvent ()
 	{
+		//select_level.........................
+
 		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = GameStart;
-		UIEventListener.Get (UI.Button_Again.gameObject).onClick = Again;
-		UIEventListener.Get (UI.Button_NextLevel.gameObject).onClick = NextLevel;
-		UIEventListener.Get (UI.Button_BackLevel.gameObject).onClick = BackLevel;
-		UIEventListener.Get (UI.Button_BackHome.gameObject).onClick = BackHome;
-		UIEventListener.Get (UI.Button_TimeOutBackHome.gameObject).onClick = BackHome;
-		UIEventListener.Get (UI.Button_Menu.gameObject).onClick = LevelMenu;
 		UIEventListener.Get (UI.Button_UP.gameObject).onClick = Select_Level;
 		UIEventListener.Get (UI.Button_DOWN.gameObject).onClick = Select_Level;
+
+		//Billboard............................
+
+		UIEventListener.Get (UI.Button_Menu.gameObject).onClick = LevelMenu;
+		UIEventListener.Get (UI.Button_NextLevel.gameObject).onClick = NextLevel;
+		UIEventListener.Get (UI.Button_Again.gameObject).onClick = Again;
+		UIEventListener.Get (UI.Button_BackHome.gameObject).onClick = BackHome;
+
+		//FeedBack.............................
+
+		UIEventListener.Get (UI.Button_BackLevel.gameObject).onClick = BackLevel;
+
+		//TimeOut..............................
+
+		UIEventListener.Get (UI.Button_TimeOutBackHome.gameObject).onClick = BackHome;
 	}
 
 	//顯示答對錯Icon
@@ -601,34 +883,20 @@ public class Level1_Controller:MonoBehaviour
 	//選擇關卡
 	private void Select_Level (GameObject btn)
 	{
-//		if (btn == UI.Button_UP.gameObject) {
-//			if (DB.Select_Level_number < DB.TOTAL_LEVEL + 1) {
-//				if (DB.Select_Level_number < 9)
-//					UI.Label_Level.text = (++DB.Select_Level_number).ToString ();
-//				else {
-//					int txt = int.Parse (UI.Label_Level.text);
-//					UI.Label_Level.text = (++txt).ToString ();
-//					DB.Select_Level_number += 2;
-//				}
-//			}
-//		}
-//
-//		if (btn == UI.Button_DOWN.gameObject) {
-//			if (DB.Select_Level_number > 1) {
-//				if (DB.Select_Level_number > 9)
-//					UI.Label_Level.text = (DB.Select_Level_number -= 2).ToString ();
-//				else
-//					UI.Label_Level.text = (--DB.Select_Level_number).ToString ();
-//			}
-//		}
 		if (btn == UI.Button_UP.gameObject) {
-			if (DB.Select_Level_number < DB.TOTAL_LEVEL)
-				UI.Label_Level.text = (++DB.Select_Level_number).ToString ();
+			if (DB.Select_Level_number < DB.TOTAL_LEVEL) {
+//				UI.Label_Level.text = (++DB.Select_Level_number).ToString ();
+				DB.Select_Level_number++;
+				Updated ();
+			}
 		}
 	
 		if (btn == UI.Button_DOWN.gameObject) {
-			if (DB.Select_Level_number > 1)
-				UI.Label_Level.text = (--DB.Select_Level_number).ToString ();
+			if (DB.Select_Level_number > 1) {
+//				UI.Label_Level.text = (--DB.Select_Level_number).ToString ();
+				DB.Select_Level_number--;
+				Updated ();
+			}
 		}
 	}
 
@@ -675,6 +943,7 @@ public class Level1_Controller:MonoBehaviour
 	{
 		time = 0;
 		feedbackCount = 0;
+		TimeOutCount = 0;
 		Suppress_Feedback = false;
 
 		//static

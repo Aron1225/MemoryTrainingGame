@@ -6,11 +6,12 @@ using System;
 
 public class Level1_2 : MonoBehaviour
 {
-	Level1_UI UI;
-	Level1_DB DB;
+//	Level1_DB DB;
 	Level1_Controller Controller;
 
-	int[][,,] LevelParameter;//關卡參數
+	//關卡參數
+	int[][,,] LevelParameter;
+
 
 	//	//同一關玩幾次
 	//	private int Loop = 5;
@@ -23,8 +24,7 @@ public class Level1_2 : MonoBehaviour
 
 	void Awake ()
 	{
-		UI = GetComponent<Level1_UI> ();
-		DB = GetComponent<Level1_DB> ();
+//		DB = GetComponent<Level1_DB> ();
 		Controller = GetComponent<Level1_Controller> ();
 	}
 
@@ -40,6 +40,7 @@ public class Level1_2 : MonoBehaviour
 
 	void ButtonEvent ()
 	{
+		//將執行權給Controller
 		Controller.StartGameLoop += (GameObject go) => StartCoroutine (GameLoop ());
 	}
 
@@ -73,15 +74,15 @@ public class Level1_2 : MonoBehaviour
 
 	private void MAP ()
 	{
-		//讀入txt
-		DB.map = Resources.LoadAll<TextAsset> ("JT/maps");
+//		DB.map = Resources.LoadAll<TextAsset> ("JT/maps");
 
-		Controller.LoadMap (DB.map [1].text);
+		//讀入txt
+		Controller.LoadMap (Resources.LoadAll<TextAsset> ("JT/maps") [1].text);
 	}
 
 	IEnumerator GameLoop ()
 	{
-		IEnumerator e = Loop1 (DB.Select_Level_number);
+		IEnumerator e = Loop1 (Controller.Select_Level_number);
 
 		yield return StartCoroutine (e);
 
@@ -117,23 +118,24 @@ public class Level1_2 : MonoBehaviour
 
 			var Loop = LevelParameter [number] [i, 0, 0];
 
-			DB.random = LevelParameter [number] [i, 0, 1];
+//			DB.random = LevelParameter [number] [i, 0, 1];
+			Controller.random = LevelParameter [number] [i, 0, 1];
 
 			var mapRange1 = LevelParameter [number] [i, 1, 0];//0
 
 			var mapRange2 = LevelParameter [number] [i, 1, 1];//3
 
-			List<List<Vector3>> maps = Controller.GetMapRange (mapRange1, mapRange2);//0~3,取得指定範圍地圖陣列
+			List<List<Vector3>> maps = Controller.Get_MapRange (mapRange1, mapRange2);//0~3,取得指定範圍地圖陣列
 
 			e = Loop2 (Loop, maps);
 
 			yield return StartCoroutine (e);
 
-			if (e.Current != null)
+			if ((int)e.Current != 0)
 				break;
 		}
 
-		yield return e.Current;
+		yield return e.Current;//回傳至GameLoop
 	}
 
 	IEnumerator Loop2 (int Loop, List<List<Vector3>> maps)
@@ -148,7 +150,7 @@ public class Level1_2 : MonoBehaviour
 			yield return StartCoroutine (LevelManagement (maps [index++]));
 
 			//隨機亂數
-			yield return StartCoroutine (MakeRandom (DB.random));
+			yield return StartCoroutine (MakeRandom ());
 
 			//亮燈
 			yield return StartCoroutine (ShowLight ());
@@ -159,12 +161,12 @@ public class Level1_2 : MonoBehaviour
 			//重置
 			yield return StartCoroutine (Reset ());
 
-			if (Controller.Feedback (DB.LevelUP)) {
+			if (Controller.Feedback ()) {
 				CheckCode = 1;
 				break;
 			}
 
-			if (Controller.IfTimeOut ()) {
+			if (Controller.IfTimeOut) {
 				CheckCode = 2;
 				break;
 			}
@@ -176,28 +178,28 @@ public class Level1_2 : MonoBehaviour
 	///關卡設定
 	IEnumerator LevelManagement (List<Vector3> map)
 	{
-		Controller.DisplaySliderBar ();//更新難度條
-
-		var mapCount = map.Count;   
-
-		DB.g_iBalance = Level1_DB.UFOList.Count - mapCount;//多(少)幾台
-
-		//extra
-		if (DB.g_iBalance > 0) {
-			UFO.DestroyUFO (DB.g_iBalance);//Destroy幾台
-		}
-
-		//lack
-		if (DB.g_iBalance < 0) {
-			DB.g_iBalance *= -1;
-			UFO.InstantiateUFOs (DB.g_iBalance);//實例化UFO
-		} 
-
-		//重設場上所有UFO座標
-		for (int i = 0; i < mapCount; i++)
-			Level1_DB.UFOList [i].moveTo (0.8f, map [i], true, 0.1f);
-		
-		yield break;
+//		Controller.DisplaySliderBar ();//更新難度條
+//
+//		var mapCount = map.Count;   
+//
+//		DB.g_iBalance = Level1_DB.UFOList.Count - mapCount;//多(少)幾台
+//
+//		//extra
+//		if (DB.g_iBalance > 0) {
+//			UFO.DestroyUFO (DB.g_iBalance);//Destroy幾台
+//		}
+//
+//		//lack
+//		if (DB.g_iBalance < 0) {
+//			DB.g_iBalance *= -1;
+//			UFO.InstantiateUFOs (DB.g_iBalance);//實例化UFO
+//		} 
+//
+//		//重設場上所有UFO座標
+//		for (int i = 0; i < mapCount; i++)
+//			Level1_DB.UFOList [i].moveTo (0.8f, map [i], true, 0.1f);
+//		
+//		yield break;
 		//		bool needAdd = true;
 		//		
 		//		if (DB.arrangement_index == Level [LoopFlag, 1]) {
@@ -244,90 +246,97 @@ public class Level1_2 : MonoBehaviour
 		//			Level1_DB.UFOList [i].moveTo (0.7f, DB.arrangement [DB.arrangement_index] [i], true, 0.1f);
 		//
 		//		yield break;
+		yield return Controller._LevelManagement (map, false);
 	}
 
 	//隨機亂數
-	IEnumerator MakeRandom (int key)//key->需要幾個亂數
+	IEnumerator MakeRandom ()
 	{
-		//清空
-		Level1_DB.UFO_Random.Clear ();
-
-		List<UFO> TempList = Level1_DB.UFOList.ToList ();
-
-		for (int i = 0; i < key; i++) {
-			int num = UnityEngine.Random.Range (0, TempList.Count);
-			Level1_DB.UFO_Random.Add (TempList [num]);
-			TempList [num] = TempList [TempList.Count - 1];
-			TempList.RemoveAt (TempList.Count - 1);
-		}
-		yield break;
+//		//清空
+//		Level1_DB.UFO_Random.Clear ();
+//
+//		List<UFO> TempList = Level1_DB.UFOList.ToList ();
+//
+//		for (int i = 0; i < key; i++) {
+//			int num = UnityEngine.Random.Range (0, TempList.Count);
+//			Level1_DB.UFO_Random.Add (TempList [num]);
+//			TempList [num] = TempList [TempList.Count - 1];
+//			TempList.RemoveAt (TempList.Count - 1);
+//		}
+//		yield break;
+		yield return Controller._MakeRandom ();
 	}
 
+	//亮燈
 	IEnumerator ShowLight ()
 	{
-		//當陣列全部等於false時執行
-		yield return DB.WaitUntilUFOReady;
-
-		yield return DB.WaitOneSecond;
-
-		var last = Level1_DB.UFO_Random.Last ();
-
-		foreach (var ufo in Level1_DB.UFO_Random) {
-
-			ufo.Red ();
-
-			yield return new WaitForSeconds (DB.lighttime);
-
-			ufo.Original (false);
-
-			//當走訪至最後時跳出迴圈
-			if (ufo == last)
-				break;
-
-			yield return new WaitForSeconds (DB.darktime);
-		}
+//		//當陣列全部等於false時執行
+//		yield return DB.WaitUntilUFOReady;
+//
+//		yield return DB.WaitOneSecond;
+//
+//		var last = Level1_DB.UFO_Random.Last ();
+//
+//		foreach (var ufo in Level1_DB.UFO_Random) {
+//
+//			ufo.Red ();
+//
+//			yield return new WaitForSeconds (DB.lighttime);
+//
+//			ufo.Original (false);
+//
+//			//當走訪至最後時跳出迴圈
+//			if (ufo == last)
+//				break;
+//
+//			yield return new WaitForSeconds (DB.darktime);
+//		}
+		yield return Controller._ShowLight ();
 	}
 
+	//答案比對
 	IEnumerator AnswerCompare ()
 	{
-		//清空
-		Level1_DB.UFO.Clear ();
-
-		//開啟點擊
-		UFO.AllColliderEnabled (true);
-
-		int RandomCount = Level1_DB.UFO_Random.Count;
-
-		Controller.CountDownStart ();//30秒到數
-
-		while (DB.Compare) {
-			//UFO數量到達時判斷
-			if (RandomCount == Level1_DB.UFO.Count) {
-
-				//關閉點擊
-				UFO.AllColliderEnabled (false);
-
-				DB.LevelUP = Controller.Compare (Level1_DB.UFO, Level1_DB.UFO_Random);
-
-				Controller.showResults (DB.LevelUP);
-
-				Controller.Record (DB.LevelUP);
-
-				Controller.ResetTimeOutCount ();//只要有作答TimeOutCount就歸零
-
-				break;//跳出while迴圈
-			}
-			yield return null;//等待下一幀
-		}
-		yield return DB.WaitOneSecond;
+//		//清空
+//		Level1_DB.UFO.Clear ();
+//
+//		//開啟點擊
+//		UFO.AllColliderEnabled (true);
+//
+//		int RandomCount = Level1_DB.UFO_Random.Count;
+//
+//		Controller.CountDownStart ();//30秒到數
+//
+//		while (DB.Compare) {
+//			//UFO數量到達時判斷
+//			if (RandomCount == Level1_DB.UFO.Count) {
+//
+//				//關閉點擊
+//				UFO.AllColliderEnabled (false);
+//
+//				DB.LevelUP = Controller.Compare (Level1_DB.UFO, Level1_DB.UFO_Random);
+//
+//				Controller.showResults (DB.LevelUP);
+//
+//				Controller.Record (DB.LevelUP);
+//
+//				Controller.ResetTimeOutCount ();//只要有作答TimeOutCount就歸零
+//
+//				break;//跳出while迴圈
+//			}
+//			yield return null;//等待下一幀
+//		}
+//		yield return DB.WaitOneSecond;
+		yield return Controller._AnswerCompare ();
 	}
 
 	//重置
 	IEnumerator Reset ()
 	{
-		Level1_DB.UFOList.ForEach (go => go.Original (false));
-		DB.Compare = true;
-		DB.start = true;
-		yield break;
+//		Level1_DB.UFOList.ForEach (go => go.Original (false));
+//		DB.Compare = true;
+//		DB.start = true;
+//		yield break;
+		yield return Controller._Reset ();
 	}
 }

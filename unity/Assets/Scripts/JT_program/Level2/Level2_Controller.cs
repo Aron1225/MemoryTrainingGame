@@ -7,7 +7,6 @@ using System;
 
 public class Level2_Controller : MonoBehaviour
 {
-
 	Level2_UI UI;
 	Level2_DB DB;
 

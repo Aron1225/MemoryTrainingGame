@@ -62,7 +62,7 @@ public class Level1_DB : MonoBehaviour
 	//rotate
 	public List<Level1_RotationFix> RotationGroup;
 	//初始化RotationGroup起始編號
-	public int RotationGroup_Index ;
+	public int RotationGroup_Index;
 	//random幾台
 	public int random;
 	//UFO數量平衡
@@ -94,17 +94,9 @@ public class Level1_DB : MonoBehaviour
 		arrangement = new List<List<Vector3>> ();
 
 		RotationGroup = new List<Level1_RotationFix> ();
-	}
 
-	//	void Start ()
-	//	{
-	//
-	//	}
-	//
-	//	void Update ()
-	//	{
-	//
-	//	}
+		Select_Level_number = 1;
+	}
 
 	void OnDestroy ()
 	{

@@ -6,7 +6,7 @@ using System.Linq;
 public class UFO
 {
 	//UFO建置的parent位置
-	static public  Transform UFO_group;
+	static public Transform UFO_group;
 
 	//讓UFO連續從四個頂點新增
 	static public  int s_iPos = 0;

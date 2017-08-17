@@ -1,4 +1,8 @@
 sceneSetups:
+<<<<<<< HEAD
 - path: Assets/Scene/Hoertt/ship.unity
+=======
+- path: Assets/Scene/JT/Level-1/Level1-4.unity
+>>>>>>> Level1_4 finished,Bug fix,optimization Controller,Add GA kit
   isLoaded: 1
   isActive: 1

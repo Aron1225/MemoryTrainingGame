@@ -34,7 +34,8 @@ public class CameraControl2 : MonoBehaviour
 	private Vector3 center;
 
 	float[] step;
-	int flag = 0;
+
+//	int flag = 0;
 
 
 	private void Awake ()
@@ -58,112 +59,119 @@ public class CameraControl2 : MonoBehaviour
 		};
 	}
 
+
+	public void Step (int flag)
+	{
+		if (flag >= 0 && flag < step.Length)
+			TweenPosition.Begin (gameObject, 0.7f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [flag]));
+	}
+
+	//	public void Back ()
+	//	{
+	//		if (flag < step.Length - 1)
+	//			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [++flag]));
+	//	}
+	//
+	//	public void Forward ()
+	//	{
+	//		if (flag > 0)
+	//			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [--flag]));
+	//	}
+
 	private void FixedUpdate ()
 	{
-//		if (Level1_DB.UFOList.All (list => !(list.m_isMoving)))
-//			Move ();
+		//		if (Level1_DB.UFOList.All (list => !(list.m_isMoving)))
+		//			Move ();
 
-//		Move2 ();
+		//		Move2 ();
 	}
 
-	public void Back ()
-	{
-		if (flag < step.Length - 1)
-			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [++flag]));
-	}
-
-	public void Forward ()
-	{
-		if (flag > 0)
-			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [--flag]));
-	}
-
-//	private void Move2 ()
-//	{
-//		//只看最外層的UFO
-//		for (int i = 0; i < DB.arrangement [DB.arrangement_index].Count; i++) {
-//
-//			var pos = DB.arrangement [DB.arrangement_index] [i];
-//
-//			//local to World 
-//			var Local_To_World = transform.TransformVector (pos);
-//
-//			var World_To_Screen = m_Camera.WorldToScreenPoint (Local_To_World);
-//
-//
-//			//指到arrangement的點
-//			Debug.DrawLine (transform.position, Local_To_World, Color.green);
-//
-//
-//			//寬
-//			bool b1 = targetToScreenPoint.x < m_ScreenEdgeBuffer || targetToScreenPoint.x > ScreenWidth - m_ScreenEdgeBuffer;
-//
-//			//高
-//			bool b2 = World_To_Screen.y < m_ScreenEdgeBuffer || World_To_Screen.y > ScreenHeight - m_ScreenEdgeBuffer;
-//
-//			bool b3 = Mathf.Abs (Mathf.Abs (World_To_Screen.x) - 960) < test;
-//
-//			bool b4 = Mathf.Abs (World_To_Screen.y) - 540 < test;
-//
-//			bool b1 = World_To_Screen.x < m_ScreenEdgeBuffer;
-//
-//			bool b5 = Vector2.Distance (new Vector2 (World_To_Screen.x, World_To_Screen.y), ScreenCenter) < m_ScreenEdgeBuffer2;
-//
-//			if (b1) {
-//				if (transform.localPosition.z >= m_MaxSize)
-//					transform.Translate (transform.forward * -Time.deltaTime * m_movingSpeed);
-//
-//				m_CameraIsmoving = true;
-//
-//				return;
-//			}
-//
-//			if (b5) {
-//				transform.Translate (transform.forward * Time.deltaTime * m_movingSpeed * 1.5f);
-//
-//				m_CameraIsmoving = true;
-//
-//				return;
-//			}
-//
-//			m_CameraIsmoving = false;
-//		}
-//	}
+	//	private void Move2 ()
+	//	{
+	//		//只看最外層的UFO
+	//		for (int i = 0; i < DB.arrangement [DB.arrangement_index].Count; i++) {
+	//
+	//			var pos = DB.arrangement [DB.arrangement_index] [i];
+	//
+	//			//local to World
+	//			var Local_To_World = transform.TransformVector (pos);
+	//
+	//			var World_To_Screen = m_Camera.WorldToScreenPoint (Local_To_World);
+	//
+	//
+	//			//指到arrangement的點
+	//			Debug.DrawLine (transform.position, Local_To_World, Color.green);
+	//
+	//
+	//			//寬
+	//			bool b1 = targetToScreenPoint.x < m_ScreenEdgeBuffer || targetToScreenPoint.x > ScreenWidth - m_ScreenEdgeBuffer;
+	//
+	//			//高
+	//			bool b2 = World_To_Screen.y < m_ScreenEdgeBuffer || World_To_Screen.y > ScreenHeight - m_ScreenEdgeBuffer;
+	//
+	//			bool b3 = Mathf.Abs (Mathf.Abs (World_To_Screen.x) - 960) < test;
+	//
+	//			bool b4 = Mathf.Abs (World_To_Screen.y) - 540 < test;
+	//
+	//			bool b1 = World_To_Screen.x < m_ScreenEdgeBuffer;
+	//
+	//			bool b5 = Vector2.Distance (new Vector2 (World_To_Screen.x, World_To_Screen.y), ScreenCenter) < m_ScreenEdgeBuffer2;
+	//
+	//			if (b1) {
+	//				if (transform.localPosition.z >= m_MaxSize)
+	//					transform.Translate (transform.forward * -Time.deltaTime * m_movingSpeed);
+	//
+	//				m_CameraIsmoving = true;
+	//
+	//				return;
+	//			}
+	//
+	//			if (b5) {
+	//				transform.Translate (transform.forward * Time.deltaTime * m_movingSpeed * 1.5f);
+	//
+	//				m_CameraIsmoving = true;
+	//
+	//				return;
+	//			}
+	//
+	//			m_CameraIsmoving = false;
+	//		}
+	//	}
 		
-//	//符合螢幕範圍
-//	private void Move ()
-//	{
-//		m_CameraIsmoving = false;
-//
-//		for (int i = 0; i < DB.UFO_group.childCount; i++) {
-//
-//			if (!DB.UFO_group.GetChild (i))
-//				continue;
-//
-//			//將UFO轉換為遊戲畫面上的座標點
-//			Vector3 targetToScreenPoint = m_Camera.WorldToScreenPoint (DB.UFO_group.GetChild (i).position);
-//
-//			//寬
-//			bool b1 = targetToScreenPoint.x < m_ScreenEdgeBuffer || targetToScreenPoint.x > ScreenWidth - m_ScreenEdgeBuffer;
-//			//高
-//			bool b2 = targetToScreenPoint.y < m_ScreenEdgeBuffer || targetToScreenPoint.y > ScreenHeight - m_ScreenEdgeBuffer;
-//
-//
-//			if (b1 || b2) {
-//				if (transform.localPosition.z >= m_MaxSize)
-//					transform.Translate (transform.forward * -Time.deltaTime * m_movingSpeed);
-//
-//				m_CameraIsmoving = true;
-//
-//				Debug.DrawLine (transform.position, DB.UFO_group.GetChild (i).position, Color.red);//繪製螢幕到UFO的射線
-//				return;
-//			}
-//
-//			Debug.DrawLine (transform.position, DB.UFO_group.GetChild (i).position, Color.green);
-//
-//			Debug.DrawLine (transform.position, center, Color.cyan);
-//		}
-//	}
+	//	//符合螢幕範圍
+	//	private void Move ()
+	//	{
+	//		m_CameraIsmoving = false;
+	//
+	//		for (int i = 0; i < DB.UFO_group.childCount; i++) {
+	//
+	//			if (!DB.UFO_group.GetChild (i))
+	//				continue;
+	//
+	//			//將UFO轉換為遊戲畫面上的座標點
+	//			Vector3 targetToScreenPoint = m_Camera.WorldToScreenPoint (DB.UFO_group.GetChild (i).position);
+	//
+	//			//寬
+	//			bool b1 = targetToScreenPoint.x < m_ScreenEdgeBuffer || targetToScreenPoint.x > ScreenWidth - m_ScreenEdgeBuffer;
+	//			//高
+	//			bool b2 = targetToScreenPoint.y < m_ScreenEdgeBuffer || targetToScreenPoint.y > ScreenHeight - m_ScreenEdgeBuffer;
+	//
+	//
+	//			if (b1 || b2) {
+	//				if (transform.localPosition.z >= m_MaxSize)
+	//					transform.Translate (transform.forward * -Time.deltaTime * m_movingSpeed);
+	//
+	//				m_CameraIsmoving = true;
+	//
+	//				Debug.DrawLine (transform.position, DB.UFO_group.GetChild (i).position, Color.red);//繪製螢幕到UFO的射線
+	//				return;
+	//			}
+	//
+	//			Debug.DrawLine (transform.position, DB.UFO_group.GetChild (i).position, Color.green);
+	//
+	//			Debug.DrawLine (transform.position, center, Color.cyan);
+	//		}
+	//	}
 
 	void OnDrawGizmos ()
 	{

@@ -77,8 +77,8 @@ public class Level1_5 : Level1_DataBase
 			//重置
 			yield return StartCoroutine (Reset ());
 
-			if (Controller.IfTheEnd (LevelCount, Loop) || Controller.Feedback (DB.LevelUP))
-				yield break;
+//			if (Controller.IfTheEnd (LevelCount, Loop) || Controller.Feedback (DB.LevelUP))
+//				yield break;
 
 			//等待下一幀
 			yield return null;

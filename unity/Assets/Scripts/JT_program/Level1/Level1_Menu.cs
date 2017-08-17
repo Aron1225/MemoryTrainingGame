@@ -15,13 +15,14 @@ public class Level1_Menu : MonoBehaviour
 
 	private GameObject currentGameObject;
 	private GameObject[] Button_Level;
-	private UISlider progressBar;
-	private UIButton music;
+	public MaterialUI.sliderSetting progressBar;
+	public UIButton music;
 	private WaitForEndOfFrame waitforendOfframe = new WaitForEndOfFrame ();
 
-//	private UICenterOnChild center;
-//	public List<BackGroundSprite> MenuBackGround = new List<BackGroundSprite> ();
-//	private UISprite BackGround;
+	//	private UICenterOnChild center;
+	//	public List<BackGroundSprite> MenuBackGround = new List<BackGroundSprite> ();
+	//	private UISprite BackGround;
+
 	#endregion
 
 	public enum SwitchState
@@ -73,10 +74,10 @@ public class Level1_Menu : MonoBehaviour
 	//		}
 	//	}
 
-	public void ReSetBackGround ()
-	{
-//		BackGround.spriteName = "Blank";
-	}
+	//	public void ReSetBackGround ()
+	//	{
+	////		BackGround.spriteName = "Blank";
+	//	}
 
 
 	void Initialization ()
@@ -84,8 +85,8 @@ public class Level1_Menu : MonoBehaviour
 		int count = Menu.transform.Find ("LevelSelect/Scroll View/ScrollViewGrid").transform.childCount;
 		Button_Level = new GameObject[count];
 
-		music = Menu.transform.Find ("MainStart/Music").GetComponent<UIButton> ();
-		progressBar = Loading.transform.Find ("ProgressBar").GetComponent<UISlider> ();
+//		music = Menu.transform.Find ("MainStart/Music").GetComponent<UIButton> ();
+//		progressBar = Loading.transform.Find ("ProgressBar").GetComponent<UISlider> ();
 //		center = Menu.transform.Find ("LevelSelect/Scroll View/ScrollViewGrid").GetComponent<UICenterOnChild> ();
 
 		for (int i = 1; i <= count; i++)
@@ -117,32 +118,19 @@ public class Level1_Menu : MonoBehaviour
 		};
 	}
 
-	//	void OnClick (GameObject go)
-	//	{
-	//		switch (go.transform.parent.name) {
-	//		case "EasyBlock":
-	//			StartCoroutine (DisplayLoadingScreen (1, int.Parse (go.name) - 1));
-	//			break;
-	//		case "NormalBlock":
-	//			StartCoroutine (DisplayLoadingScreen (2, int.Parse (go.name) - 1));
-	//			break;
-	//		case "HardBlock":
-	//			StartCoroutine (DisplayLoadingScreen (3, int.Parse (go.name) - 1));
-	//			break;
-	//		}
-	//	}
-
-
 	//顯示Loading進度、跳轉Scene
 	IEnumerator DisplayLoadingScreen (int SceneNumber)
 	{
 		Menu.SetActive (false);
 		Loading.SetActive (true);
 
+		progressBar.LoadingAnimStart ();
+
+		yield return new WaitForSeconds (0.5f);
+
 		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (SceneNumber);
 		//載入完後先不跳轉Scene
 		LoadScene.allowSceneActivation = false;
-
 	
 		float Progress = 0;
 
@@ -151,30 +139,33 @@ public class Level1_Menu : MonoBehaviour
 		while (LoadScene.progress < 0.9f) {
 			Progress = LoadScene.progress;
 			while (displayProgress < Progress) {
-				SetProgressBar (displayProgress += 0.01f);
-				yield return waitforendOfframe;
+				progressBar.slider.value = (displayProgress += 0.01f) * 100;
+//				SetProgressBar (displayProgress += 0.01f);
+				yield return new WaitForEndOfFrame ();
 			}
-			yield return waitforendOfframe;
 		}
 
 		Progress = 1f;
 
 		while (displayProgress < Progress) {
-			SetProgressBar (displayProgress += 0.01f);
+			progressBar.slider.value = (displayProgress += 0.01f) * 100;
+//			SetProgressBar (displayProgress += 0.01f);
 			yield return waitforendOfframe;
 		}
+
+		progressBar.LoadingAnimFinished ();
+
+		yield return new WaitForSeconds (0.4f);
 
 		//跳轉Scene
 		LoadScene.allowSceneActivation = true;
 	}
-
-	void SetProgressBar (float Value)
-	{
-		if (progressBar) {
-			progressBar.value = Value;
-			return;
-		}
-		Debug.LogError ("progressBar is not found");
-	}
-
+	//	void SetProgressBar (float Value)
+	//	{
+	//		if (progressBar) {
+	//			progressBar.value = Value;
+	//			return;
+	//		}
+	//		Debug.LogError ("progressBar is not found");
+	//	}
 }
