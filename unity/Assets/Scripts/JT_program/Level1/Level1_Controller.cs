@@ -14,7 +14,7 @@ public class Level1_Controller:MonoBehaviour
 	Level1_DB DB;
 	GA_Controller GA;
 
-	//TweenPosition..................
+	//TweenPosition......................
 
 	TweenPosition TP_Billboard;
 	TweenPosition TP_Wrong;

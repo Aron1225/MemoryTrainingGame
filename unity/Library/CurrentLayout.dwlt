@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 471}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -43,7 +43,7 @@ MonoBehaviour:
     y: 0
     width: 1536
     height: 821
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 471}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &3
 MonoBehaviour:
@@ -106,10 +106,10 @@ MonoBehaviour:
     y: 30
     width: 1536
     height: 771
-  m_MinSize: {x: 917, y: 442}
-  m_MaxSize: {x: 22012, y: 10021}
+  m_MinSize: {x: 913, y: 421}
+  m_MaxSize: {x: 22008, y: 10021}
   vertical: 0
-  controlID: 98
+  controlID: 86
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -131,10 +131,10 @@ MonoBehaviour:
     y: 0
     width: 1259
     height: 771
-  m_MinSize: {x: 640, y: 442}
-  m_MaxSize: {x: 18010, y: 10021}
+  m_MinSize: {x: 636, y: 421}
+  m_MaxSize: {x: 18006, y: 10021}
   vertical: 0
-  controlID: 99
+  controlID: 87
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -181,10 +181,10 @@ MonoBehaviour:
     y: 0
     width: 690
     height: 771
-  m_MinSize: {x: 204, y: 442}
-  m_MaxSize: {x: 4004, y: 8042}
+  m_MinSize: {x: 204, y: 421}
+  m_MaxSize: {x: 4004, y: 8021}
   vertical: 1
-  controlID: 100
+  controlID: 88
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -230,8 +230,8 @@ MonoBehaviour:
     y: 221
     width: 690
     height: 550
-  m_MinSize: {x: 204, y: 221}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -255,8 +255,8 @@ MonoBehaviour:
     y: 0
     width: 204
     height: 771
-  m_MinSize: {x: 204, y: 221}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -434,19 +434,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Textures/JT
+    - Assets/Scripts/JT_program/Level1
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/Textures/JT
+  - Assets/Scripts/JT_program/Level1
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Users\Aron\Desktop\MemoryTrainingGame\unity
   m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 455}
-    m_SelectedIDs: ac400000
-    m_LastClickedID: 16556
-    m_ExpandedIDs: 000000008e280000f22800006e290000902b0000e82c0000c031000012320000bc320000d6320000ae330000943700003a38000040380000d8380000e2380000883d0000b63e0000ac400000be410000ca420000484800004a4800004c4800004e48000050480000524800005448000056480000584800005a4800005c4800005e480000ffffff7f
+    m_SelectedIDs: 823c0000
+    m_LastClickedID: 15490
+    m_ExpandedIDs: 00000000b4330000163400008c3400007e360000c0370000363c0000823c0000203d0000343d0000f83d0000904100002e42000034420000c6420000ce42000002470000224800000c4a0000144b0000144c00002451000026510000285100002a5100002c5100002e51000030510000325100003451000036510000385100003a510000ffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -474,7 +474,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000008e280000f22800006e290000902b0000e82c0000c031000012320000bc320000d6320000ae330000943700003a38000040380000d8380000e2380000883d0000b63e0000ac400000be410000ca420000484800004a4800004c4800004e48000050480000524800005448000056480000584800005a4800005c4800005e480000
+    m_ExpandedIDs: 00000000b4330000163400008c3400007e360000c0370000363c0000823c0000203d0000343d0000f83d0000904100002e42000034420000c6420000ce42000002470000224800000c4a0000144b0000144c00002451000026510000285100002a5100002c5100002e51000030510000325100003451000036510000385100003a510000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -683,9 +683,9 @@ MonoBehaviour:
     height: 750
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: a6470000
-    m_LastClickedID: 18342
-    m_ExpandedIDs: e6fbffff000000001a4600001e460000264600006046000094460000a4460000b6460000dc460000f646000006470000124700003c4700005e47000096470000be470000ce470000
+    m_SelectedIDs: 70500000
+    m_LastClickedID: 20592
+    m_ExpandedIDs: 14e5ffff00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
