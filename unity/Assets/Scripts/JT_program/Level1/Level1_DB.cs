@@ -9,7 +9,7 @@ public class Level1_DB : MonoBehaviour
 
 	public readonly int TOTAL_LEVEL = 10;
 
-	public readonly int TimeOut_Time = 3;
+	public readonly int TimeOut_Time = 30;
 
 	//UFO................................
 
@@ -32,9 +32,13 @@ public class Level1_DB : MonoBehaviour
 
 	static public  List<UFO> UFO_Random;
 
+
+	////列為可疑除......................................
+	public int arrangement_index;
+	public List<Level1_RotationFix> RotationGroup;
 	//......................................
-	public int arrangement_index;//列為可疑除
-	//......................................
+
+
 
 	//Level.............................
 
@@ -59,8 +63,6 @@ public class Level1_DB : MonoBehaviour
 
 	//List
 	public  List<List<Vector3>> arrangement;
-	//rotate
-	public List<Level1_RotationFix> RotationGroup;
 	//初始化RotationGroup起始編號
 	public int RotationGroup_Index;
 	//random幾台
@@ -93,7 +95,7 @@ public class Level1_DB : MonoBehaviour
 
 		arrangement = new List<List<Vector3>> ();
 
-		RotationGroup = new List<Level1_RotationFix> ();
+//		RotationGroup = new List<Level1_RotationFix> ();
 
 		Select_Level_number = 1;
 	}

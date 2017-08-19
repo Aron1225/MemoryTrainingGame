@@ -291,35 +291,6 @@ public class Level1_Controller:MonoBehaviour
 	//Feedback..........................................
 
 	//回饋,連錯3題增加亮燈時間,再錯3題減少random數,再錯3題返回上一關
-	public bool Feedback (bool result)
-	{
-		bool bo = false;
-		//避免IfTheEnd()與Feedback()同時執行
-		if (!Suppress_Feedback) {
-
-			if (result) {
-				feedbackCount = 0;
-				return false;
-			} 
-
-			feedbackCount++;
-
-			if (feedbackCount == 3) {
-				DB.lighttime = Mathf.Clamp (DB.lighttime + 0.5f, 0.1f, 2f);
-				DB.darktime = Mathf.Clamp (DB.darktime + 0.5f, 0.1f, 2f);
-			} 
-
-			if (feedbackCount == 6) {
-				DB.random = Mathf.Clamp (DB.random - 1, 2, 10);
-			}
-
-			if (feedbackCount == 9) {
-				bo = true;
-			}
-		}
-		return bo;
-	}
-
 	public bool Feedback ()
 	{
 		bool bo = false;
@@ -348,8 +319,7 @@ public class Level1_Controller:MonoBehaviour
 		}
 		return bo;
 	}
-
-
+		
 	//有關閒置部分...................................
 
 	//閒置倒數
@@ -423,11 +393,11 @@ public class Level1_Controller:MonoBehaviour
 	//旋轉群組.........................................
 
 	//創造旋轉群組
-	public GameObject CreateGroup (Transform parent)//parent->RotationGroup物件的parent
+	public Level1_RotationFix CreateGroup ()
 	{
 		GameObject go = new GameObject ("G" + DB.RotationGroup_Index++);
 
-		go.transform.parent = parent;
+		go.transform.parent = DB.UFO_group;
 
 		go.transform.localScale = Vector3.one;
 
@@ -437,11 +407,11 @@ public class Level1_Controller:MonoBehaviour
 
 		rf.direction = dir *= -1;
 
-		DB.RotationGroup.Add (rf);
+//		DB.RotationGroup.Add (rf);
 
-		return go;
+		return rf;
 	}
-
+		
 	//移除整個RotationGroup物件，並移除所有子物件(UFO)
 	public void DestoryGroup (Level1_RotationFix rf)
 	{
@@ -464,7 +434,7 @@ public class Level1_Controller:MonoBehaviour
 	//回到主畫面
 	public void GA_BackHome ()
 	{
-		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (0);
+		BackHome (this.gameObject);
 	}
 
 	public void GA_Again ()
@@ -533,6 +503,53 @@ public class Level1_Controller:MonoBehaviour
 	//
 	//		return true;
 	//	}
+	//	//創造旋轉群組
+	//	public GameObject CreateGroup (Transform parent)//parent->RotationGroup物件的parent
+	//	{
+	//		GameObject go = new GameObject ("G" + DB.RotationGroup_Index++);
+	//
+	//		go.transform.parent = parent;
+	//
+	//		go.transform.localScale = Vector3.one;
+	//
+	//		Level1_RotationFix rf = go.AddComponent<Level1_RotationFix> ();
+	//
+	//		rf.Group = go;
+	//
+	//		rf.direction = dir *= -1;
+	//
+	//		DB.RotationGroup.Add (rf);
+	//
+	//		return go;
+	//	}
+	//	public bool Feedback (bool result)
+	//	{
+	//		bool bo = false;
+	//		//避免IfTheEnd()與Feedback()同時執行
+	//		if (!Suppress_Feedback) {
+	//
+	//			if (result) {
+	//				feedbackCount = 0;
+	//				return false;
+	//			}
+	//
+	//			feedbackCount++;
+	//
+	//			if (feedbackCount == 3) {
+	//				DB.lighttime = Mathf.Clamp (DB.lighttime + 0.5f, 0.1f, 2f);
+	//				DB.darktime = Mathf.Clamp (DB.darktime + 0.5f, 0.1f, 2f);
+	//			}
+	//
+	//			if (feedbackCount == 6) {
+	//				DB.random = Mathf.Clamp (DB.random - 1, 2, 10);
+	//			}
+	//
+	//			if (feedbackCount == 9) {
+	//				bo = true;
+	//			}
+	//		}
+	//		return bo;
+	//	}
 
 	//private..................................................................
 
@@ -589,7 +606,7 @@ public class Level1_Controller:MonoBehaviour
 			for (int i = 0; i < map.Count; i++)
 				Level1_DB.UFOList [i].moveTo (1f, map [i], true, 0.1f);
 	}
-
+		
 	//Controller開始設置
 	private void ControllerStart ()
 	{
@@ -601,42 +618,6 @@ public class Level1_Controller:MonoBehaviour
 	private void Updated ()
 	{
 		UI.Label_Level.text = DB.Select_Level_number.ToString ();
-	}
-
-	//遊戲結束後UI的觸發動作............................
-
-	//顯示所有資訊
-	private void UI_Finish ()
-	{
-		UI_Slider_Level_dir (false);
-		UI_Billboard_dir (true);
-
-		//大於10 nextButton就隱藏
-		if (DB.Select_Level_number >= DB.TOTAL_LEVEL)
-			UI.Button_NextLevel.gameObject.SetActive (false);
-		else
-			UI.Button_NextLevel.gameObject.SetActive (true);
-	}
-
-	private void UI_GameOver ()
-	{
-		UI_Wrong_dir (true);
-		UI_Slider_Level_dir (false);
-	}
-
-	private void UI_TimeOut ()
-	{
-		UI_TimeOut_dir (true);
-		UI_Slider_Level_dir (false);
-	}
-
-
-	//GA套件的UI的觸發動作.........................
-
-	void UI_GA_LevelMenu ()
-	{
-		UI_Select_Level_dir (false);
-		UI_Slider_Level_dir (false);
 	}
 
 	//Button......................................
@@ -699,9 +680,9 @@ public class Level1_Controller:MonoBehaviour
 
 	private void Next ()
 	{
+//		UI.Label_Level.text = (int.Parse (UI.Label_Level.text) + 1).ToString ();
 		DB.Select_Level_number++;
 		Updated ();
-//		UI.Label_Level.text = (int.Parse (UI.Label_Level.text) + 1).ToString ();
 	}
 
 	private void Back ()
@@ -710,6 +691,42 @@ public class Level1_Controller:MonoBehaviour
 //		UI.Label_Level.text = (Mathf.Max (1, (int.Parse (UI.Label_Level.text) - 1))).ToString ();
 		DB.Select_Level_number = Mathf.Clamp (DB.Select_Level_number - 1, 1, 10);
 		Updated ();
+	}
+
+	//遊戲結束後UI的觸發動作............................
+
+	//顯示所有資訊
+	private void UI_Finish ()
+	{
+		UI_Slider_Level_dir (false);
+		UI_Billboard_dir (true);
+
+		//大於10 nextButton就隱藏
+		if (DB.Select_Level_number >= DB.TOTAL_LEVEL)
+			UI.Button_NextLevel.gameObject.SetActive (false);
+		else
+			UI.Button_NextLevel.gameObject.SetActive (true);
+	}
+
+	private void UI_GameOver ()
+	{
+		UI_Wrong_dir (true);
+		UI_Slider_Level_dir (false);
+	}
+
+	private void UI_TimeOut ()
+	{
+		UI_TimeOut_dir (true);
+		UI_Slider_Level_dir (false);
+	}
+
+
+	//GA套件的UI的觸發動作.........................
+
+	void UI_GA_LevelMenu ()
+	{
+		UI_Select_Level_dir (false);
+		UI_Slider_Level_dir (false);
 	}
 
 	//When Button CLick.............................
@@ -776,7 +793,7 @@ public class Level1_Controller:MonoBehaviour
 //			TP_Slider_Level.delay = 0;
 //		} else
 //			TP_Slider_Level.PlayReverse ();
-		UI_dir (Forward, true, UI.UI_Slider_Level, ref TP_Slider_Level, 1f, new Vector3 (-535, -146, 0));
+		UI_dir (Forward, true, UI.UI_Slider_Level, ref TP_Slider_Level, 0.6f, new Vector3 (-535, -146, 0));
 	}
 
 	private void UI_Wrong_dir (bool Forward)
@@ -888,7 +905,11 @@ public class Level1_Controller:MonoBehaviour
 //				UI.Label_Level.text = (++DB.Select_Level_number).ToString ();
 				DB.Select_Level_number++;
 				Updated ();
+			} else {
+				DB.Select_Level_number = 1;
+				Updated ();
 			}
+
 		}
 	
 		if (btn == UI.Button_DOWN.gameObject) {
@@ -896,17 +917,20 @@ public class Level1_Controller:MonoBehaviour
 //				UI.Label_Level.text = (--DB.Select_Level_number).ToString ();
 				DB.Select_Level_number--;
 				Updated ();
+			}else{
+				DB.Select_Level_number = 10;
+				Updated ();
 			}
 		}
 	}
-
 
 	//顯示答對率
 	private void DisplayPercent ()
 	{
 		float sum = DB.BingoCount + DB.ErrorCount;
 		float percent = DB.BingoCount / sum;
-		UI.slider_percent.value = percent;
+		UI.slider_percent.value = (!float.IsNaN (percent)) ? percent : 0;//if not NaN
+//		UI.slider_percent.value = percent;
 	}
 
 	//顯示總共玩遊戲時間
@@ -960,7 +984,7 @@ public class Level1_Controller:MonoBehaviour
 		DB.lighttime = tmp_lightTime;
 		DB.darktime = tmp_darkTime;
 		DB.RotationGroup_Index = 0;
-		//		DB.random = 0;
+		//DB.random = 0;
 		DB.g_iBalance = 0;
 		DB.g_iTempValue = 0;
 		DB.BingoCount = 0;
@@ -968,6 +992,5 @@ public class Level1_Controller:MonoBehaviour
 		DB.start = false;
 		DB.LevelUP = false;
 		DB.TimeOut = false;
-		DB.RotationGroup.Clear ();
 	}
 }

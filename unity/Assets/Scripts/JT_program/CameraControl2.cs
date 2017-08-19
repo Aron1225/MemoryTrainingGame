@@ -5,7 +5,7 @@ using System.Linq;
 
 public class CameraControl2 : MonoBehaviour
 {
-	public Level1_DB DB;
+//	public Level1_DB DB;
 
 	//	//邊緣緩衝(向後
 	//	public float m_ScreenEdgeBuffer = 0;
@@ -21,7 +21,7 @@ public class CameraControl2 : MonoBehaviour
 	public float offset = 5;
 
 	//Camera
-	private Camera m_Camera;
+//	private Camera m_Camera;
 	//螢幕高
 	private int ScreenHeight;
 	//螢幕寬
@@ -34,13 +34,11 @@ public class CameraControl2 : MonoBehaviour
 	private Vector3 center;
 
 	float[] step;
-
-//	int flag = 0;
-
+	//	int flag = 0;
 
 	private void Awake ()
 	{
-		m_Camera = GetComponent<Camera> ();
+//		m_Camera = GetComponent<Camera> ();
 		ScreenHeight = Screen.height;//螢幕高
 		ScreenWidth = Screen.width;//螢幕寬
 		ScreenCenter = new Vector2 (ScreenWidth / 2, ScreenHeight / 2);
@@ -78,13 +76,13 @@ public class CameraControl2 : MonoBehaviour
 	//			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [--flag]));
 	//	}
 
-	private void FixedUpdate ()
-	{
-		//		if (Level1_DB.UFOList.All (list => !(list.m_isMoving)))
-		//			Move ();
-
-		//		Move2 ();
-	}
+//	private void FixedUpdate ()
+//	{
+//		if (Level1_DB.UFOList.All (list => !(list.m_isMoving)))
+//			Move ();
+//
+//		Move2 ();
+//	}
 
 	//	private void Move2 ()
 	//	{

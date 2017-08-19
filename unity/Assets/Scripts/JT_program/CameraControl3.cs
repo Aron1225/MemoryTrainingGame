@@ -19,7 +19,7 @@ public class CameraControl3 : Level1_DataBase
 	public float offset = 5;
 
 	//Camera
-	private Camera m_Camera;
+//	private Camera m_Camera;
 	//螢幕高
 	private int ScreenHeight;
 	//螢幕寬
@@ -34,12 +34,12 @@ public class CameraControl3 : Level1_DataBase
 //	public bool m_CameraIsmoving;
 
 	float[] step;
-	int flag = 0;
+//	int flag = 0;
 
 
 	private void Awake ()
 	{
-		m_Camera = GetComponent<Camera> ();
+//		m_Camera = GetComponent<Camera> ();
 		ScreenHeight = Screen.height;//螢幕高
 		ScreenWidth = Screen.width;//螢幕寬
 		ScreenCenter = new Vector2 (ScreenWidth / 2, ScreenHeight / 2);
@@ -50,36 +50,35 @@ public class CameraControl3 : Level1_DataBase
 	void Start ()
 	{
 		step = new float[] {
-			-1547,
+			-1634,
 			-1730,
 			-2205,
 			-2877,
 			-921,
 			-1592,
-			-1780,
+//			-1780,
 			-2502,
 			-2569
 		};
 	}
 
-	void FixedUpdate ()
+	public void Step (int flag)
 	{
-		
+		if (flag >= 0 && flag < step.Length)
+			TweenPosition.Begin (gameObject, 0.7f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [flag]));
 	}
 
-
-	public void Back ()
-	{
-		if (flag < 8)
-			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [++flag]));
-	}
-
-	public void Forward ()
-	{
-		if (flag > 0)
-			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [--flag]));
-	}
-
+//	public void Back ()
+//	{
+//		if (flag < 8)
+//			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [++flag]));
+//	}
+//
+//	public void Forward ()
+//	{
+//		if (flag > 0)
+//			TweenPosition.Begin (gameObject, 0.5f, new Vector3 (transform.localPosition.x, transform.localPosition.y, step [--flag]));
+//	}
 
 
 	//	private void Move2 ()
@@ -97,7 +96,7 @@ public class CameraControl3 : Level1_DataBase
 	//			//World to Screen
 	//			var World_To_Screen = m_Camera.WorldToScreenPoint (Local_To_World);
 	//
-	////			float distance = Vector3.Distance (World_To_Screen, ScreenCenter);
+	//			float distance = Vector3.Distance (World_To_Screen, ScreenCenter);
 	//
 	//			if (distance > maxValue) {
 	//				maxPos = World_To_Screen;

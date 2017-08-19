@@ -13,19 +13,22 @@ public class Level1_RotationFix : MonoBehaviour
 	public int direction = 1;
 
 	//半徑
-//	public int radius_length = 100;
+	//	public int radius_length = 100;
 
 	//子物件成員
-//	public List<Transform> children = new List<Transform> ();
-
-//	public bool inverse = true;
-//
-//	public float offset = 0;
+	//	public List<Transform> children = new List<Transform> ();
+	//	public bool inverse = true;
+	//	public float offset = 0;
 
 	void Start ()
 	{
 		
 	}
+
+	//	void OnDestroy ()
+	//	{
+	//		Destroy (gameObject);
+	//	}
 
 	void FixedUpdate ()
 	{
@@ -34,8 +37,11 @@ public class Level1_RotationFix : MonoBehaviour
 
 	private void Rotate ()
 	{
+		//當子物件為空就移除群組gameobject
 		if (transform.childCount == 0)
-			return;
+			Destroy (gameObject);
+//			return;
+			
 
 		transform.Rotate (Vector3.forward * direction * 0.5f);
 
@@ -51,7 +57,7 @@ public class Level1_RotationFix : MonoBehaviour
 	}
 }
 
-#region lagency 
+#region lagency
 
 //	//設定旋轉方式
 //	public void SetMode (Mode mode)
