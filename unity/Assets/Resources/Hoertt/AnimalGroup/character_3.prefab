@@ -20,10 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4108376905721840}
   - component: {fileID: 61066707716848202}
-  - component: {fileID: 114579278570773296}
   - component: {fileID: 114367496506478248}
   - component: {fileID: 114998220188609486}
   - component: {fileID: 114164942144978454}
+  - component: {fileID: 114703281833749120}
   m_Layer: 8
   m_Name: character_3
   m_TagString: Untagged
@@ -55,20 +55,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
   m_Offset: {x: -0.051483154, y: 2.0263977}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
   m_Size: {x: 186.9076, y: 185.72742}
-  m_EdgeRadius: 0
 --- !u!114 &114164942144978454
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -110,12 +99,12 @@ MonoBehaviour:
   updateAnchors: 1
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mWidth: 194
-  mHeight: 194
+  mWidth: 121
+  mHeight: 121
   mDepth: 4
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
-  keepAspectRatio: 0
+  keepAspectRatio: 1
   aspectRatio: 1
   mType: 0
   mFillDirection: 4
@@ -127,14 +116,14 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mSprite: {fileID: 21300004, guid: 180bd0199f46279499972ac8b6bf2105, type: 3}
+  mSprite: {fileID: 21300004, guid: 6a8a1308226298c45a944939070664d3, type: 3}
   mMat: {fileID: 0}
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mBorder: {x: 0, y: 0, z: 0, w: 0}
   mFixedAspect: 0
   mPixelSize: 1
   nextSprite: {fileID: 0}
---- !u!114 &114579278570773296
+--- !u!114 &114703281833749120
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -142,7 +131,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237709371174330}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7d745c5a08ec344fbd7585557a3cb99, type: 3}
+  m_Script: {fileID: 11500000, guid: d9443103c7fcfef4ab39075faf50b542, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   obj: {fileID: 1237709371174330}
