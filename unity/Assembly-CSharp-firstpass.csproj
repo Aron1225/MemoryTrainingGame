@@ -179,6 +179,12 @@
  <Reference Include="MonitorComponents">
  <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Monitor Components/MonitorComponents.dll</HintPath>
  </Reference>
+ <Reference Include="Newtonsoft.Json">
+ <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+ </Reference>
+ <Reference Include="TETCSharpClient">
+ <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Plugins/TETCSharpClient.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

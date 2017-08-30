@@ -9,8 +9,8 @@ public class Ship_Animal : MonoBehaviour {
 
      static Vector3[] AppearPos = new Vector3[]
     {
-        new Vector3(-383f,384f)   ,new Vector3(367f,384f) ,
-        new Vector3(-38f,-269f)   ,new Vector3(367f,-269f),
+        new Vector3(-383f,384f,0f)   ,new Vector3(367f,384f,0f) ,
+        new Vector3(-38f,-269f,0f)   ,new Vector3(367f,-269f,0f),
     };
 
     public class CreatAnimal
@@ -28,16 +28,13 @@ public class Ship_Animal : MonoBehaviour {
             GO.transform.localScale = Vector3.one;
 
             GO.name = "Player(" + P_Pos + ")";
-            Debug.Log("1");
             GO.transform.position = AppearPos[P_Pos / 4];
-            //TweenPosition.Begin(GO, 0.01f, AppearPos[P_Pos/4]);
+            //TweenPosition.Begin(GO, 0.1f, AppearPos[P_Pos/4]);
             switch (Ship_LevelData.QuizMoveSet[Level])
             {
                 case 1:
-                    Debug.Log("2");
                     TweenPosition.Begin(GO, 1.5f, Ship_LevelData.Postable[Level][P_Pos++]);
                     //GO.transform.position = Ship_LevelData.Postable[Level][P_Pos++];
-                    Debug.Log("3");
                     break;
                 case 2:
                    
@@ -53,19 +50,28 @@ public class Ship_Animal : MonoBehaviour {
             GetAnimal = GO;
 
         }
+        
 
     }
-    public static IEnumerator shine(GameObject GO)
+    public static IEnumerator shine(List<int> GOnum)
     {
+        
         for (int i = 0; i < 3; i++)
         {
-            Debug.Log("r");
-        GO.GetComponent<UI2DSprite>().color = new Color(1, 0, 0, 1);
-        yield return (new WaitForSeconds(1f));
-            Debug.Log("w");
-        GO.GetComponent<UI2DSprite>().color = new Color(1, 1, 1, 1);
-        yield return (new WaitForSeconds(1f));
+                Debug.Log("r");
+                foreach (var num in GOnum)
+                {
+                    Ship_Control.Animalist[num].GetComponent<UI2DSprite>().color = new Color(1, 0, 0, 1);
+                }
+                yield return (new WaitForSeconds(1f));
+                Debug.Log("w");
+                foreach (var num in GOnum)
+                {
+                    Ship_Control.Animalist[num].GetComponent<UI2DSprite>().color = new Color(1, 1, 1, 1);
+                }
+                yield return (new WaitForSeconds(1f));
         }
+        
         yield break;
     }
 }

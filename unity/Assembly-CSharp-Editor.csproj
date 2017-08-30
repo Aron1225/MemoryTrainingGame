@@ -277,6 +277,12 @@
  <Reference Include="MonitorComponents.Editor">
  <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Monitor Components/Editor/MonitorComponents.Editor.dll</HintPath>
  </Reference>
+ <Reference Include="Newtonsoft.Json">
+ <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+ </Reference>
+ <Reference Include="TETCSharpClient">
+ <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Plugins/TETCSharpClient.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
  </Reference>

@@ -53,7 +53,7 @@ public class n_m_array : MonoBehaviour, iarray
         int tmp = _nm_array.Length;
         for (int i = _nm_array.Length; i >0; i--)
         {
-            tmp = _nm_array[i];
+   
             int Rngtmp = Random.Range(0, i);
             _nm_array[i] = _nm_array[Rngtmp];
             _nm_array[Rngtmp] = tmp;

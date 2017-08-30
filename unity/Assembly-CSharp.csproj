@@ -244,6 +244,7 @@
      <Compile Include="Assets\Scripts\Hoertt_program\CarLoop\CarMove.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\CarLoop\sound.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\CarLoop\trigger.cs" />
+     <Compile Include="Assets\Scripts\Hoertt_program\Ship\ReceivedDataEventArgs.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\Ship\Ship_Animal.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\Ship\Ship_AnimalClic.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\Ship\Ship_Control.cs" />
@@ -395,6 +396,12 @@
  </Reference>
  <Reference Include="MonitorComponents">
  <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Monitor Components/MonitorComponents.dll</HintPath>
+ </Reference>
+ <Reference Include="Newtonsoft.Json">
+ <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+ </Reference>
+ <Reference Include="TETCSharpClient">
+ <HintPath>C:/Users/Hoertt/Desktop/MemoryTrainingGame/unity/Assets/Plugins/TETCSharpClient.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
