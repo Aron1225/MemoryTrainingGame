@@ -72,7 +72,7 @@ public class UFO
 
 			Level1_DB.UFOList.Remove (go);
 
-			MonoBehaviour.Destroy (go.GetUFO, 1.5f);
+			MonoBehaviour.Destroy (go.GetUFO, 1f);
 
 			Level1_DB.UFO.Remove (go);
 		}

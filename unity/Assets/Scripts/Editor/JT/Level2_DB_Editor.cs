@@ -3,7 +3,6 @@ using UnityEditor;
 
 public class Level2_DB_Editor : MonoBehaviour
 {
-
 	[CustomEditor (typeof(Level2_DB))]
 	public class Level2_Select_Editor : Editor
 	{
@@ -13,31 +12,30 @@ public class Level2_DB_Editor : MonoBehaviour
 
 			GUILayout.Space (15);
 
-			EditorGUILayout.BeginHorizontal ();
-
 			//只有數值變化時執行
 			if (GUI.changed) {
 				Debug.Log ("value change");
 			}
 
-			GUILayout.Label ("排列圖", GUILayout.Width (40));
-
-			DB.index = EditorGUILayout.IntField (DB.index);
-
-			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
-				DB.index = 0;
-			}
-
-			if (GUILayout.Button ("+", GUILayout.Width (30))) {
-				DB.index++;///要設計最大不可超過值
-			}
-			if (GUILayout.Button ("-", GUILayout.Width (30))) {
-				if (DB.index > 0) {
-					DB.index--;
-				}
-			}
-
-			EditorGUILayout.EndHorizontal ();
+//			EditorGUILayout.BeginHorizontal ();
+//			GUILayout.Label ("排列圖", GUILayout.Width (40));
+//
+//			DB.index = EditorGUILayout.IntField (DB.index);
+//
+//			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
+//				DB.index = 0;
+//			}
+//
+//			if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//				DB.index++;///要設計最大不可超過值
+//			}
+//			if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//				if (DB.index > 0) {
+//					DB.index--;
+//				}
+//			}
+//
+//			EditorGUILayout.EndHorizontal ();
 
 			EditorGUILayout.BeginHorizontal ();
 

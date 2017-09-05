@@ -7,53 +7,126 @@ using System.Runtime.InteropServices;
 
 public class Level2_1 : MonoBehaviour
 {
-	Level2_UI UI;
-	Level2_DB DB;
 	Level2_Controller Controller;
+	ICoffeeCup coffeeCup;
 
-	//同一關玩幾次
-	private int Loop;
-	private int LevelCount;
+	//關卡參數
+	Level[][,] LevelParameter;
+
+	class Level
+	{
+		public int Loop;
+		public int random;
+		public ICoffeeCup ICC;
+
+		public Level (int Loop, int random, ICoffeeCup ICC)
+		{
+			this.Loop = Loop;
+			this.random = random;
+			this.ICC = ICC;
+		}
+	}
 
 	void Awake ()
 	{
-		UI = GetComponent<Level2_UI> ();
-		DB = GetComponent<Level2_DB> ();
 		Controller = GetComponent<Level2_Controller> ();
-		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = GameStart;
-		Loop = 5;
-		LevelCount = 0;
 	}
 
 	void Start ()
 	{
-		
+		Parameter ();
+
+		ButtonEvent ();
 	}
 
-	void GameStart (GameObject go)
+	void ButtonEvent ()
 	{
-		//遊戲開始
-		StartCoroutine (GameLoop ());
+		//將執行權給Controller
+		Controller.StartGameLoop += (GameObject go) => StartCoroutine (GameLoop ());
 	}
 
-	void Update ()
+	void Parameter ()
 	{
-		
+		//{ Loop, random,iCoffeeCup}
+		LevelParameter = new Level[][,] {
+			new Level[,] { { new Level (1, 2, CoffeeCup.build (Model.OneCup_TwoBall)) } }, 
+			new Level[,] { { new Level (1, 2, CoffeeCup.build (Model.OneCups_ThreeBall)) } }, 
+			new Level[,] { { new Level (1, 3, CoffeeCup.build (Model.OneCups_ThreeBall)) } },
+			new Level[,] { { new Level (1, 3, CoffeeCup.build (Model.OneCups_FourBall)) } },
+			new Level[,] { { new Level (1, 4, CoffeeCup.build (Model.OneCups_FourBall)) } },
+			new Level[,] { { new Level (1, 4, CoffeeCup.build (Model.OneCups_FiveBall)) } },
+			new Level[,] { { new Level (1, 5, CoffeeCup.build (Model.OneCups_FiveBall)) } },
+			new Level[,] { { new Level (1, 5, CoffeeCup.build (Model.OneCups_SixBall)) } },
+			new Level[,] { { new Level (1, 6, CoffeeCup.build (Model.OneCups_SixBall)) } },
+			new Level[,] { { new Level (1, 6, CoffeeCup.build (Model.OneCups_SevenBall)) } },
+		};
 	}
 
 	IEnumerator GameLoop ()
 	{
-		Controller.Select_Slider_init ();//歸位UI
+		IEnumerator e = Loop1 (Controller.Select_Level_number);
 
-//		LevelCount = (DB.index + 1) * Loop;
+		yield return StartCoroutine (e);
 
-		while (true) {
+		//回傳遊戲是如何結束
+		//回傳0代表正常結束遊戲
+		//回傳1代表錯誤9次
+		//回傳2代表遊戲閒置
 
-			//關卡設定
-			yield return StartCoroutine (LevelManagement ());
+		int code = (int)e.Current;
+
+		if (code == 0) {
+			Controller.Finish ();//結束遊戲
+			Debug.Log ("finish");
+		}
+		if (code == 1) {
+//			Controller.GameOver ();//錯誤9次
+			Debug.Log ("GameOver");
+		}
+		if (code == 2) {
+//			Controller.TimeOut ();//遊戲閒置
+			Debug.Log ("TimeOut");
+		}
+
+		yield break;
+	}
+
+	IEnumerator Loop1 (int Select_Level_number)
+	{
+		int number = Select_Level_number - 1;
+
+		IEnumerator e = null;
+
+//		{ Loop, random,ICC}
+		for (int i = 0; i < LevelParameter [number].GetLength (0); i++) {
+
+			var Loop = LevelParameter [number] [i, 0].Loop;
+
+			Controller.random = LevelParameter [number] [i, 0].random; 
+
+			var ICC = LevelParameter [number] [i, 0].ICC;
+
+			e = Loop2 (Loop, ICC);
+
+			yield return StartCoroutine (e);
+
+			if ((int)e.Current != 0)
+				break;
+		}
+
+		yield return e.Current;//回傳至GameLoop
+	}
+
+	IEnumerator Loop2 (int Loop, ICoffeeCup ICC)
+	{
+		int CheckCode = 0;
+
+		yield return StartCoroutine (LevelManagement (ICC));
+
+		for (int i = 0; i < Loop; i++) {
 
 			//隨機亂數
-			yield return StartCoroutine (MakeRandom (DB.random));
+			yield return StartCoroutine (MakeRandom ());
 
 			//亮燈
 			yield return StartCoroutine (ShowLight ());
@@ -64,133 +137,61 @@ public class Level2_1 : MonoBehaviour
 			//重置
 			yield return StartCoroutine (Reset ());
 
-//			if (Controller.IfTheEnd (LevelCount, Loop) || Controller.Feedback (DB.LevelUP))
-//				yield break;
-
-			if (Controller.IfTheEnd (LevelCount, Loop))
-				yield break;
-
-			//等待下一幀
-			yield return null;
+//			if (Controller.Feedback ()) {
+//				CheckCode = 1;
+//				break;
+//			}
+//
+//			if (Controller.IfTimeOut) {
+//				CheckCode = 2;
+//				break;
+//			}
 		}
+
+		coffeeCup.stop ();
+
+		yield return CheckCode;//回傳至Loop1
 	}
 
 	///關卡設定
-	IEnumerator LevelManagement ()
+	IEnumerator LevelManagement (ICoffeeCup ICC)
 	{
-//		Controller.DisplaySliderBar ();
+		Controller.DisplaySliderBar ();//更新難度條
 
-		//5,10,15,20次個別關卡
-		if (LevelCount++ != Loop && DB.start)
-			yield break;
+		coffeeCup = ICC;
 
-		Action action = null;//方法容器
-
-		if (DB.index == 0) {
-			Debug.Log ("1");	
-		}
-		if (DB.index == 1) {
-			action += Controller.Main_Cylinder_Rotation (10, true);
-			action += Controller.Cups_Rotation (40, false);
-			Debug.Log ("2");	
-		}
-		if (DB.index == 2) {
-			action += Controller.Main_Cylinder_Rotation (20, false);
-			action += Controller.Cups_Rotation (30, true);
-			Debug.Log ("3");	
-		}
-		if (DB.index == 3) {
-			action += Controller.Main_Cylinder_Rotation (30, true);
-			action += Controller.Cups_Rotation (20, false);
-			Debug.Log ("4");	
-		}
-		if (DB.index == 4) {
-			action += Controller.Main_Cylinder_Rotation (40, false);
-//			action += Controller.Cups_Rotation (10, true);
-			Debug.Log ("5");	
-		}
-
-		DB.index++;
-		LevelCount = 1;
-		Controller.StartRotation (action);//執行容器
+		coffeeCup.start ();
 
 		yield break;
+
+//		IEnumerator e = Controller._LevelManagement (ICC);
+//
+//		yield return StartCoroutine (e);
+//
+//		coffeeCup = (ICoffeeCup)e.Current;
+//
+//		yield break;
 	}
 
 	//隨機亂數
-	IEnumerator MakeRandom (int key)//key->需要幾個亂數
+	IEnumerator MakeRandom ()
 	{
-		//清空
-		Level2_DB.BALL_Random.Clear ();
-
-		List<BALL> TempList = Level2_DB.BALLList.ToList ();
-
-		for (int i = 0; i < key; i++) {
-			int num = UnityEngine.Random.Range (0, TempList.Count);
-			Level2_DB.BALL_Random.Add (TempList [num]);
-			TempList [num] = TempList [TempList.Count - 1];
-			TempList.RemoveAt (TempList.Count - 1);
-		}
-		yield break;
+		yield return Controller._MakeRandom ();
 	}
 
 	IEnumerator ShowLight ()
 	{
-//		yield return DB.WaitOneSecond;
-
-		var last = Level2_DB.BALL_Random.Last ();
-
-		foreach (var ball in Level2_DB.BALL_Random) {
-
-			ball.Red ();
-
-			yield return new WaitForSeconds (DB.lighttime);
-
-			ball.Original (false);
-
-			//當走訪至最後時跳出迴圈
-			if (ball == last)
-				break;
-
-			yield return new WaitForSeconds (DB.darktime);
-		}
+		yield return Controller._ShowLight ();
 	}
 
 	IEnumerator AnswerCompare ()
 	{
-		//清空
-		Level2_DB.BALL.Clear ();
-
-		//開啟點擊
-		Controller.AllColliderEnabled (true);
-
-		int RandomCount = Level2_DB.BALL_Random.Count;
-//
-		while (true) {
-			//UFO數量到達時判斷
-			if (RandomCount == Level2_DB.BALL.Count) {
-
-				//關閉點擊
-				Controller.AllColliderEnabled (false);
-
-				DB.LevelUP = Controller.Compare (Level2_DB.BALL, Level2_DB.BALL_Random);
-
-				Controller.showResults (DB.LevelUP);
-
-				Controller.Record (DB.LevelUP);
-
-				break;//跳出while迴圈
-			}
-			yield return null;//等待下一幀
-		}
-		yield return DB.WaitOneSecond;
+		yield return Controller._AnswerCompare ();
 	}
 
 	//重置
 	IEnumerator Reset ()
 	{
-		Level2_DB.BALLList.ForEach (go => go.Original (false));
-		DB.start = true;
-		yield break;
+		yield return Controller._Reset ();
 	}
 }

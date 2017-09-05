@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class BALL : MonoBehaviour
 {
-	//點擊移動開關 default = false
-	public bool m_bToggle{ get; set; }
+	public Level2_Controller Controller;
+
+	//點擊開關 default = false
+	public bool m_bToggle;
 
 	void Awake ()
 	{
@@ -14,14 +17,19 @@ public class BALL : MonoBehaviour
 
 	void Start ()
 	{
-		//加入陣列
-		Level2_DB.BALLList.Add (this);
 		AddListener ();//Onclick
 	}
 
-	void Update ()
+	void OnEnable ()
 	{
-		
+		//加入陣列
+		Level2_DB.BALLList.Add (this);
+	}
+
+	void OnDisable ()
+	{
+		//從陣列移除
+		Level2_DB.BALLList.Remove (this);
 	}
 
 	//Add Listener
@@ -60,12 +68,11 @@ public class BALL : MonoBehaviour
 			return;
 		}
 
-		this.ReplaceTheBALL (color);
+		this.ReplaceTheBall (color);
 		this.m_bToggle = true;
 		this.ColliderEnabled (Collider);
 	}
-
-
+		
 	//BALL紅色
 	public void Red ()
 	{
@@ -76,7 +83,7 @@ public class BALL : MonoBehaviour
 			return;
 		}
 
-		this.ReplaceTheBALL (color);
+		this.ReplaceTheBall (color);
 	}
 
 	//BALL灰色
@@ -89,13 +96,13 @@ public class BALL : MonoBehaviour
 			return;
 		}
 
-		this.ReplaceTheBALL (color);
+		this.ReplaceTheBall (color);
 		this.m_bToggle = false;
 		this.ColliderEnabled (true);
 	}
 
 	//替換BALL
-	private void ReplaceTheBALL (Material colorball)
+	private void ReplaceTheBall (Material colorball)
 	{
 		GetComponent<Renderer> ().material = colorball;
 	}

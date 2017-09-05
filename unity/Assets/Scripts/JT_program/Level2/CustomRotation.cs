@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CustomRotation : MonoBehaviour
 {
-	public float speed{ get; set; }
+	public float speed;
 
 	void FixedUpdate ()
 	{
@@ -16,6 +16,7 @@ public class CustomRotation : MonoBehaviour
 		speed *= Clockwise ? 1 : -1;
 	}
 
+	//緩慢停止
 	public void SmoothStop ()
 	{
 		StartCoroutine (smooth ());
@@ -30,10 +31,16 @@ public class CustomRotation : MonoBehaviour
 				speed += 0.5f;
 			yield return null;
 		}
-		destroyScript ();//停止旋轉後移除腳本
+//		DisableScript ();//停止旋轉後關閉
+		DestroyScript ();//停止旋轉後移除腳本
 	}
 
-	void destroyScript ()
+	void DisableScript ()
+	{
+		enabled = false;
+	}
+
+	void DestroyScript ()
 	{
 		Destroy (this);
 	}

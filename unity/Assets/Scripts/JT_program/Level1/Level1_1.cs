@@ -72,7 +72,7 @@ public class Level1_1 : MonoBehaviour
 		Controller.LoadMap (Resources.LoadAll<TextAsset> ("JT/maps") [0].text);
 	}
 
-	 IEnumerator GameLoop ()
+	IEnumerator GameLoop ()
 	{
 		IEnumerator e = Loop1 (Controller.Select_Level_number);
 
@@ -101,7 +101,7 @@ public class Level1_1 : MonoBehaviour
 		yield break;
 	}
 
-	 IEnumerator Loop1 (int Select_Level_number)
+	IEnumerator Loop1 (int Select_Level_number)
 	{
 		int number = Select_Level_number - 1;
 
@@ -129,7 +129,7 @@ public class Level1_1 : MonoBehaviour
 		yield return e.Current;//回傳至GameLoop
 	}
 
-	 IEnumerator Loop2 (int Loop, List<Vector3> map)
+	IEnumerator Loop2 (int Loop, List<Vector3> map)
 	{
 		int CheckCode = 0;
 
@@ -163,7 +163,7 @@ public class Level1_1 : MonoBehaviour
 	}
 
 	///關卡設定
-	 IEnumerator LevelManagement (List<Vector3> map)
+	IEnumerator LevelManagement (List<Vector3> map)
 	{
 //		Controller.DisplaySliderBar ();//更新難度條
 //
@@ -219,25 +219,25 @@ public class Level1_1 : MonoBehaviour
 	}
 		
 	//隨機亂數
-	 IEnumerator MakeRandom ()
+	IEnumerator MakeRandom ()
 	{
 		yield return Controller._MakeRandom ();
 	}
 
 	//亮燈
-	 IEnumerator ShowLight ()
+	IEnumerator ShowLight ()
 	{
 		yield return Controller._ShowLight ();
 	}
 
 	//答案比對
-	 IEnumerator AnswerCompare ()
+	IEnumerator AnswerCompare ()
 	{
 		yield return Controller._AnswerCompare ();
 	}
 
 	//重置
-	 IEnumerator Reset ()
+	IEnumerator Reset ()
 	{
 		yield return Controller._Reset ();
 	}

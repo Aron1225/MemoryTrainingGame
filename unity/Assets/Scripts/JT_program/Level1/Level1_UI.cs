@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Level1_UI : MonoBehaviour
-{
+public class Level1_UI : MonoBehaviour {
+	
 	public GameObject UI_Object;
 
 	public GameObject UI_Slider_Level;

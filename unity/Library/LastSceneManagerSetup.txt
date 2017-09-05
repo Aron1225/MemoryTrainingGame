@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scene/JT/Level-1/Level1-menu.unity
+- path: Assets/Scene/JT/Level-2/Level2-1.unity
   isLoaded: 1
   isActive: 1

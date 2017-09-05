@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
 
-public class Level1_Controller:MonoBehaviour
+public class Level1_Controller : MonoBehaviour
 {
 	//執行GameStart的方法
 	public UIEventListener.VoidDelegate StartGameLoop;
@@ -53,7 +53,6 @@ public class Level1_Controller:MonoBehaviour
 	//每增加難度亮燈減少的時間
 	private float interval;
 
-
 	//Getter...........................
 
 	//是否TimeOut
@@ -74,6 +73,11 @@ public class Level1_Controller:MonoBehaviour
 
 	void Awake ()
 	{
+		#if UNITY_EDITOR
+		Debug.logger.logEnabled = true;
+		#else
+		Debug.logger.logEnabled = false;
+		#endif
 		UI = GetComponent<Level1_UI> ();
 		DB = GetComponent<Level1_DB> ();
 		GA = GetComponent<GA_Controller> ();
@@ -250,8 +254,9 @@ public class Level1_Controller:MonoBehaviour
 		DisplayScore ();//統計
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
 		GA.HideAllGUIs ();
+		Invoke ("unload", 1.5f);
 	}
-
+		
 	//錯誤9次
 	public void GameOver ()
 	{
@@ -260,6 +265,7 @@ public class Level1_Controller:MonoBehaviour
 		UI_GameOver ();
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
 		GA.HideAllGUIs ();
+		Invoke ("unload", 1.5f);
 	}
 
 	//遊戲閒置
@@ -270,8 +276,15 @@ public class Level1_Controller:MonoBehaviour
 		UI_TimeOut ();
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
 		GA.HideAllGUIs ();
+		Invoke ("unload", 1.5f);
 	}
 
+	//卸載掉不使用的資源
+	void unload ()
+	{
+		Resources.UnloadUnusedAssets ();//讓Unity 自行去卸載掉不使用的資源
+		GC.Collect ();
+	}
 
 	//SliderBar.....................................
 
@@ -282,11 +295,11 @@ public class Level1_Controller:MonoBehaviour
 		UI.slider_level.value = increase;
 	}
 
-	//設定SliderBar
-	public void DisplaySliderBar (Func<float> increase)
-	{
-		UI.slider_level.value = increase ();
-	}
+	//	//設定SliderBar
+	//	public void DisplaySliderBar (Func<float> increase)
+	//	{
+	//		UI.slider_level.value = increase ();
+	//	}
 
 	//Feedback..........................................
 
@@ -426,7 +439,9 @@ public class Level1_Controller:MonoBehaviour
 	{
 		StopAllCoroutines ();
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
-		resetParameter ();//參數初始
+		Invoke ("unload", 1.5f);
+//		Resources.UnloadUnusedAssets ();//讓Unity 自行去卸載掉不使用的資源
+//		resetParameter ();//參數初始
 		UI_GA_LevelMenu ();
 		GA.HideAllGUIs ();
 	}
@@ -434,16 +449,19 @@ public class Level1_Controller:MonoBehaviour
 	//回到主畫面
 	public void GA_BackHome ()
 	{
-		BackHome (this.gameObject);
+		Btn_BackHome (this.gameObject);
 	}
 
 	public void GA_Again ()
 	{
 		StopAllCoroutines ();
 		UFO.DestroyUFO (Level1_DB.UFOList.Count, 1f);//清空場上所有UFO
-		resetParameter ();//參數初始
-		StartGameLoop (this.gameObject);
-		ControllerStart ();
+		Invoke ("unload", 1.5f);
+//		Resources.UnloadUnusedAssets ();//讓Unity 自行去卸載掉不使用的資源
+		GameStart (this.gameObject);
+//		resetParameter ();//參數初始
+//		StartGameLoop (this.gameObject);
+//		ControllerStart ();
 	}
 
 	//map..............................................
@@ -553,6 +571,8 @@ public class Level1_Controller:MonoBehaviour
 
 	//private..................................................................
 
+	//Init.....................................
+
 	//初始
 	private void Init ()
 	{
@@ -576,12 +596,21 @@ public class Level1_Controller:MonoBehaviour
 		//建置UFO位置
 		UFO.UFO_group = DB.UFO_group;
 
+
+		/*
 		time = 0;
+		feedbackCount = 0;
+		TimeOutCount = 0;
+		Suppress_Feedback = false;
+		
+		*/
+
+//		time = 0;
 		dir = 1;
 		interval = 0.05f;
-		TimeOutCount = 0;
-		feedbackCount = 0;
-		Suppress_Feedback = false;
+//		TimeOutCount = 0;
+//		feedbackCount = 0;
+//		Suppress_Feedback = false;
 
 		tmp_lightTime = DB.lighttime;
 		tmp_darkTime = DB.darktime;
@@ -607,12 +636,16 @@ public class Level1_Controller:MonoBehaviour
 				Level1_DB.UFOList [i].moveTo (1f, map [i], true, 0.1f);
 	}
 		
+	//start............................
+
 	//Controller開始設置
 	private void ControllerStart ()
 	{
 		RecordTime = StartCoroutine (_RecordTime ());//開始計時
 		setLightTime ();//選完難度後設定關卡參數
 	}
+
+	//update number...........................
 
 	///更新遊戲畫面上的數字
 	private void Updated ()
@@ -623,60 +656,72 @@ public class Level1_Controller:MonoBehaviour
 	//Button......................................
 
 	//遊戲開始
-	private void GameStart (GameObject go)
+	private void Btn_GameStart (GameObject go)
 	{
-		StartGameLoop (go);
-		ControllerStart ();
+//		StartGameLoop (go);
+//		ControllerStart ();
+		GameStart (go);
 		UI_GameStart ();
 		GA.start ();//MoveIn GA套件
 	}
 
 	//下一關
-	private void NextLevel (GameObject go)
+	private void Btn_NextLevel (GameObject go)
 	{
 		Next ();
-		resetParameter ();//參數初始
-		StartGameLoop (go);
-		ControllerStart ();
+//		resetParameter ();//參數初始
+//		StartGameLoop (go);
+//		ControllerStart ();
+		GameStart (go);
 		UI_NextLevel ();
 		GA.start ();//MoveIn GA套件
 	}
 
 	//上一關
-	private void BackLevel (GameObject go)
+	private void Btn_BackLevel (GameObject go)
 	{
 		Back ();
-		resetParameter ();//參數初始
-		StartGameLoop (go);
-		ControllerStart ();
+//		resetParameter ();//參數初始
+//		StartGameLoop (go);
+//		ControllerStart ();
+		GameStart (go);
 		UI_BackLevel ();
 		GA.start ();//MoveIn GA套件
 	}
-
+		
 	//再玩一次
-	private void Again (GameObject go)
+	private void Btn_Again (GameObject go)
 	{
-		resetParameter ();//參數初始
-		StartGameLoop (go);
-		ControllerStart ();
+//		resetParameter ();//參數初始
+//		StartGameLoop (go);
+//		ControllerStart ();
+		GameStart (go);
 		UI_Again ();
 		GA.start ();//MoveIn GA套件
 	}
 
 	//回到選擇難度
-	private void LevelMenu (GameObject go)
+	private void Btn_LevelMenu (GameObject go)
 	{
-		resetParameter ();//參數初始
+//		resetParameter ();//參數初始
 		UI_LevelMenu ();
 	}
 
 	//回到主畫面
-	private void BackHome (GameObject go)
+	private void Btn_BackHome (GameObject go)
 	{
-		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (0);
+		SceneManager.LoadScene (1);
+//		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (1);
 	}
 
 	//Button附帶方法...............................
+
+	private void GameStart (GameObject go)
+	{
+		resetParameter ();//參數初始
+		StartGameLoop (go);//執行遊戲主要協程
+		ControllerStart ();//執行次要計時協程與亮燈時間設定
+	}
 
 	private void Next ()
 	{
@@ -861,24 +906,24 @@ public class Level1_Controller:MonoBehaviour
 	{
 		//select_level.........................
 
-		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = GameStart;
+		UIEventListener.Get (UI.Button_CONFIRM.gameObject).onClick = Btn_GameStart;
 		UIEventListener.Get (UI.Button_UP.gameObject).onClick = Select_Level;
 		UIEventListener.Get (UI.Button_DOWN.gameObject).onClick = Select_Level;
 
 		//Billboard............................
 
-		UIEventListener.Get (UI.Button_Menu.gameObject).onClick = LevelMenu;
-		UIEventListener.Get (UI.Button_NextLevel.gameObject).onClick = NextLevel;
-		UIEventListener.Get (UI.Button_Again.gameObject).onClick = Again;
-		UIEventListener.Get (UI.Button_BackHome.gameObject).onClick = BackHome;
+		UIEventListener.Get (UI.Button_Menu.gameObject).onClick = Btn_LevelMenu;
+		UIEventListener.Get (UI.Button_NextLevel.gameObject).onClick = Btn_NextLevel;
+		UIEventListener.Get (UI.Button_Again.gameObject).onClick = Btn_Again;
+		UIEventListener.Get (UI.Button_BackHome.gameObject).onClick = Btn_BackHome;
 
 		//FeedBack.............................
 
-		UIEventListener.Get (UI.Button_BackLevel.gameObject).onClick = BackLevel;
+		UIEventListener.Get (UI.Button_BackLevel.gameObject).onClick = Btn_BackLevel;
 
 		//TimeOut..............................
 
-		UIEventListener.Get (UI.Button_TimeOutBackHome.gameObject).onClick = BackHome;
+		UIEventListener.Get (UI.Button_TimeOutBackHome.gameObject).onClick = Btn_BackHome;
 	}
 
 	//顯示答對錯Icon
@@ -917,7 +962,7 @@ public class Level1_Controller:MonoBehaviour
 //				UI.Label_Level.text = (--DB.Select_Level_number).ToString ();
 				DB.Select_Level_number--;
 				Updated ();
-			}else{
+			} else {
 				DB.Select_Level_number = 10;
 				Updated ();
 			}
@@ -985,8 +1030,8 @@ public class Level1_Controller:MonoBehaviour
 		DB.darktime = tmp_darkTime;
 		DB.RotationGroup_Index = 0;
 		//DB.random = 0;
-		DB.g_iBalance = 0;
-		DB.g_iTempValue = 0;
+		//DB.g_iBalance = 0;
+//		DB.g_iTempValue = 0;
 		DB.BingoCount = 0;
 		DB.ErrorCount = 0;
 		DB.start = false;

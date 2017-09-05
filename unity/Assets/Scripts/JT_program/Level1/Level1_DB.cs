@@ -5,26 +5,27 @@ using UnityEngine;
 
 public class Level1_DB : MonoBehaviour
 {
+	#region readonly
+
 	//readOnly..........................
 
 	public readonly int TOTAL_LEVEL = 10;
 
 	public readonly int TimeOut_Time = 30;
 
-	//UFO................................
+	#endregion
 
-	//Color
+	#region static
+
+	//Color................................
+
 	static public  GameObject Original_color;
 
 	static public  GameObject Red_color;
 
 	static public  GameObject Gray_color;
 
-	///載入UFO
-	static public GameObject[] LoadUFO;
-
-	//UFO隨機樣式
-	static public int g_iRandom;
+	//List.............................
 
 	static public  List<UFO> UFOList;
 
@@ -32,58 +33,93 @@ public class Level1_DB : MonoBehaviour
 
 	static public  List<UFO> UFO_Random;
 
+	//int.............................
 
-	////列為可疑除......................................
-	public int arrangement_index;
-	public List<Level1_RotationFix> RotationGroup;
-	//......................................
+	//UFO隨機樣式
+	static public int g_iRandom;
 
+	//GameObject......................
 
+	///載入UFO
+	static public GameObject[] LoadUFO;
 
-	//Level.............................
+	#endregion
 
-	//難度選單數字
-	public int Select_Level_number;
+	#region public
 
-	public float lighttime;
-
-	public float darktime;
-
-	///UFO物件父節點
-	public Transform UFO_group;
+	//bool..................................
 
 	//GameStart
 	public bool start = false;
-	///關卡難度提升
+	//關卡難度提升
 	public bool LevelUP = false;
 	//超過時間作答
 	public bool TimeOut = false;
-
+	//比較開關
 	public bool Compare;
 
-	//List
-	public  List<List<Vector3>> arrangement;
-	//初始化RotationGroup起始編號
-	public int RotationGroup_Index;
+	//int..................................
+
+	//難度選單數字
+	public int Select_Level_number;
 	//random幾台
 	public int random;
-	//UFO數量平衡
-	public int g_iBalance;
-	///暫存值
-	public int g_iTempValue;
 	//答對次數
 	public int BingoCount;
 	//答錯次數
 	public int ErrorCount;
+	//初始化RotationGroup起始編號
+	public int RotationGroup_Index;
+
+	//float................................
+
+	//亮燈時間
+	public float lighttime;
+	//暗燈時間
+	public float darktime;
+
+	//Transform............................
+
+	//UFO物件父節點
+	public Transform UFO_group;
+
+	//List................................
+
+	//List
+	public List<List<Vector3>> arrangement;
+
+	//TextAsset............................
 
 	//排列圖
 	public TextAsset[] map;
+
+	//Vector3...............................
+
 	//bingo與error大小
 	public Vector3 CheckedScale;
+
+	//Wait.................................
+
 	//等待UFO全都停止,isMoving=false
 	public WaitUntil WaitUntilUFOReady;
 	//等待一秒
 	public WaitForSeconds WaitOneSecond;
+
+	#endregion
+
+	//lagecy.........................................
+
+	//列為可疑除......................................
+	public int arrangement_index;
+	//................................................
+
+	//UFO數量平衡
+	//public int g_iBalance;
+	///暫存值
+	//public int g_iTempValue;
+	//public List<Level1_RotationFix> RotationGroup;
+
+	//Mono.........................................
 
 	void Awake ()
 	{
@@ -94,8 +130,6 @@ public class Level1_DB : MonoBehaviour
 		UFO_Random = new List<UFO> ();
 
 		arrangement = new List<List<Vector3>> ();
-
-//		RotationGroup = new List<Level1_RotationFix> ();
 
 		Select_Level_number = 1;
 	}

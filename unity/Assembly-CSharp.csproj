@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CanvasFit.cs" />
      <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_Demo00.cs" />
      <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_Demo01.cs" />
      <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_Demo02.cs" />
@@ -241,6 +242,7 @@
      <Compile Include="Assets\ProgressBar\Script\ProgressBarBehaviour.cs" />
      <Compile Include="Assets\ProgressBar\Script\ProgressRadialBehaviour.cs" />
      <Compile Include="Assets\ProgressBar\Script\Utils.cs" />
+     <Compile Include="Assets\Scene\JT\Menu.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\CarLoop\CarMove.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\CarLoop\sound.cs" />
      <Compile Include="Assets\Scripts\Hoertt_program\CarLoop\trigger.cs" />
@@ -252,7 +254,6 @@
      <Compile Include="Assets\Scripts\JT_program\CameraControl3.cs" />
      <Compile Include="Assets\Scripts\JT_program\GA_Controller.cs" />
      <Compile Include="Assets\Scripts\JT_program\Legacy\Level1.cs" />
-     <Compile Include="Assets\Scripts\JT_program\Legacy\Level1_1new.cs" />
      <Compile Include="Assets\Scripts\JT_program\Legacy\Level1_Display_Hard_old(old).cs" />
      <Compile Include="Assets\Scripts\JT_program\Legacy\Level1_Select.cs" />
      <Compile Include="Assets\Scripts\JT_program\Legacy\Level3_Cylinder_rotation.cs" />
@@ -281,16 +282,20 @@
      <Compile Include="Assets\Scripts\JT_program\Level1\Level1_UI.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level1\UFO.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\BALL.cs" />
+     <Compile Include="Assets\Scripts\JT_program\Level2\CoffeeCup.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\CustomRotation.cs" />
+     <Compile Include="Assets\Scripts\JT_program\Level2\ICoffeeCup.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_1.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_BALL.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_Controller.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_Cylinder_rotation.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_DB.cs" />
-     <Compile Include="Assets\Scripts\JT_program\Level2\Level2_Menu_start.cs" />
+     <Compile Include="Assets\Scripts\JT_program\Level2\Level2_Menu.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_UI.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_display.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level2\Level2_easy.cs" />
+     <Compile Include="Assets\Scripts\JT_program\Level2\Model.cs" />
+     <Compile Include="Assets\Scripts\JT_program\Level2\ModelDatabase.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level3\Level3_display.cs" />
      <Compile Include="Assets\Scripts\JT_program\Level3\level3test.cs" />
      <Compile Include="Assets\Scripts\JT_program\Thread\Thread_0.cs" />

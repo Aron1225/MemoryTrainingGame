@@ -52,6 +52,9 @@ public class GA_Controller : MonoBehaviour
 			// Set GUIAnimSystemFREE.Instance.m_AutoAnimation to false in Awake() will let you control all GUI Animator elements in the scene via scripts.
 			GUIAnimSystemFREE.Instance.m_AutoAnimation = false;
 		}
+
+		GUIAnimSystemFREE.Instance.gameObject.SetActive (false);//發現這關掉可以減少很多GC
+//		Destroy (GUIAnimSystemFREE.Instance.gameObject);
 	}
 
 	// Start is called on the frame when a script is enabled just before any of the Update methods is called the first time.
@@ -148,19 +151,19 @@ public class GA_Controller : MonoBehaviour
 //		StartCoroutine (HideTitleTextMeshes ());
 	}
 
-	// MoveOut m_Title1 and m_Title2
-	IEnumerator HideTitleTextMeshes ()
-	{
-		yield return new WaitForSeconds (1.0f);
-
-//		// MoveOut m_Title1 and m_Title2
-//		m_Title1.MoveOut (GUIAnimSystemFREE.eGUIMove.Self);
-//		m_Title2.MoveOut (GUIAnimSystemFREE.eGUIMove.Self);
-//
-//		// MoveOut m_TopBar and m_BottomBar
-//		m_TopBar.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-//		m_BottomBar.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
-	}
+	//	// MoveOut m_Title1 and m_Title2
+	//	IEnumerator HideTitleTextMeshes ()
+	//	{
+	//		yield return new WaitForSeconds (1f);
+	//
+	////		// MoveOut m_Title1 and m_Title2
+	////		m_Title1.MoveOut (GUIAnimSystemFREE.eGUIMove.Self);
+	////		m_Title2.MoveOut (GUIAnimSystemFREE.eGUIMove.Self);
+	////
+	////		// MoveOut m_TopBar and m_BottomBar
+	////		m_TopBar.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+	////		m_BottomBar.MoveOut (GUIAnimSystemFREE.eGUIMove.SelfAndChildren);
+	//	}
 
 	#endregion // MoveIn/MoveOut
 
@@ -173,7 +176,7 @@ public class GA_Controller : MonoBehaviour
 	// Enable/Disable all scene switch Coroutine
 	IEnumerator EnableAllDemoButtons ()
 	{
-		yield return new WaitForSeconds (1.0f);
+		yield return new WaitForSeconds (1f);
 
 		// Enable all scene switch buttons
 		// http://docs.unity3d.com/Manual/script-GraphicRaycaster.html
@@ -203,7 +206,7 @@ public class GA_Controller : MonoBehaviour
 	public void OnButton_1 ()
 	{
 		// Disable all buttons for a few seconds
-		StartCoroutine (DisableAllButtonsForSeconds (0.5f));//點下後冷卻時間
+		StartCoroutine (DisableAllButtonsForSeconds (0.1f));//點下後冷卻時間
 
 		// Toggle m_Button1
 		ToggleButton_1 ();
