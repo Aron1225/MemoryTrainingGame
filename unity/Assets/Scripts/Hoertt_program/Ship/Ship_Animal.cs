@@ -58,13 +58,13 @@ public class Ship_Animal : MonoBehaviour {
         
         for (int i = 0; i < 3; i++)
         {
-                Debug.Log("r");
+                //Debug.Log("r");
                 foreach (var num in GOnum)
                 {
                     Ship_Control.Animalist[num].GetComponent<UI2DSprite>().color = new Color(1, 0, 0, 1);
                 }
                 yield return (new WaitForSeconds(1f));
-                Debug.Log("w");
+                //Debug.Log("w");
                 foreach (var num in GOnum)
                 {
                     Ship_Control.Animalist[num].GetComponent<UI2DSprite>().color = new Color(1, 1, 1, 1);

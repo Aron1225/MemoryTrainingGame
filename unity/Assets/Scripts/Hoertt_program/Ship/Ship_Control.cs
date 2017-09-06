@@ -5,15 +5,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using TETCSharpClient;
+using TETCSharpClient.Data;
 using UnityEngine;
 
-public class Ship_Control : MonoBehaviour {
+public class Ship_Control : MonoBehaviour, IGazeListener
+{
     Ship_Animal Animal;
     Ship_LevelData Data;
     private static GameObject CompBut;
     private GameObject[] LoadAnimal;
-    public static bool AnsCover = false,AnsStatus=true,GameLoopSta=true ;
-    public static int Level = 3,AnsNum=0;
+    public static bool AnsCover = false,AnsStatus=true,GameLoopSta=true,FinalStat = false; 
+    public static int Level = 1,AnsNum=0;
     public static List<GameObject> Animalist = new List<GameObject>();
     public static List<Ship_Animal.CreatAnimal> AnimalPrefabList = new List<Ship_Animal.CreatAnimal>();
     public static List<int> Quiz = new List<int>();
@@ -21,12 +24,22 @@ public class Ship_Control : MonoBehaviour {
     public static List<string> AnsList = new List<string>();
     public static List<string> QuizS = new List<string>();
 
+    GameObject UserSight;
     //private TcpClient socket;
     //private Thread incomingThread;
     //private System.Timers.Timer timerHeartbeat;
     //public event EventHandler<ReceivedDataEventArgs> OnData;
     //public static bool isRunning = false;
 
+
+    public void OnGazeUpdate(GazeData gazeData)
+    {
+        double gX = gazeData.SmoothedCoordinates.X;
+        double gY = gazeData.SmoothedCoordinates.Y;
+        Debug.Log(gX + "," + gY);
+        UserSight.transform.position = new Vector2((float)gX, (float)gY);
+        // Move point, do hit-testing, log coordinates etc.
+    }
     void Awake()
     {
        
@@ -36,14 +49,16 @@ public class Ship_Control : MonoBehaviour {
         Animal = GetComponent<Ship_Animal>();
         Data = GetComponent<Ship_LevelData>();
         CompBut = GameObject.Find("CompBut");
+        UserSight = GameObject.Find("UserSight");
         StartCoroutine(GameLoop());
-        
 
+        GazeManager.Instance.Activate(GazeManager.ApiVersion.VERSION_1_0, GazeManager.ClientMode.Push);
+
+        // Register this class for events
+        GazeManager.Instance.AddGazeListener(this);
     }
     IEnumerator GameLoop()
     {
-        while (GameLoopSta)
-        {
             //初始化
             yield return StartCoroutine(init());
             //建置物件並移動至題目位置
@@ -57,8 +72,8 @@ public class Ship_Control : MonoBehaviour {
             yield return StartCoroutine(QuizToQuizP());
             //開啟可點擊
             yield return StartCoroutine(OpenClickEnable());
-            
-        }
+            yield return StartCoroutine(GameFinal());
+        
 
         yield return null ;
     }
@@ -78,6 +93,15 @@ public class Ship_Control : MonoBehaviour {
         LoadAnimal = Resources.LoadAll<GameObject>("Hoertt/AnimalGroup");
         //重置Animalist
         Animalist = new List<GameObject>();
+        QuizS = new List<string>();
+
+        FinalStat = false;
+
+        AnsCover = false;
+
+        Ship_Animal.CreatAnimal.P_Pos = 0;
+
+        AnsNum = 0;
         yield break;
     }
     //建置物件並移動至題目位置
@@ -104,7 +128,8 @@ public class Ship_Control : MonoBehaviour {
         int x = 0;
         foreach(var num in Quiz)
         {
-            QuizS[x++] = Animalist[num].name;
+            QuizS.Add(Animalist[num].name);
+            x++;
         }
         //將以打亂的可選擇題目存入AllQuiz
         foreach(var i in nm.n_m()) { AllQuiz.Add(i); }
@@ -121,7 +146,6 @@ public class Ship_Control : MonoBehaviour {
     //將可選擇題目移置題目區
     IEnumerator QuizToQuizP ()
     {
-        Debug.Log(Quiz.Count);
         switch (Ship_LevelData.QuizMoveSet[Level])
         {
             case 1:
@@ -152,40 +176,33 @@ public class Ship_Control : MonoBehaviour {
     {
         if (name != null)
         {
+            //如果按下確認按鈕
             if (name == "CompBut")
             {
-                foreach (string Qname in QuizS)
+                foreach (string AnsName in AnsList)
                 {
-                    if (!AnsList.Contains(Qname)) AnsStatus = false;
+                    if (!QuizS.Contains(AnsName)) AnsStatus = false;
                 }
                 if (AnsStatus)
                 {
-                    //GoodAns += 1;
-                    //GameObject.Find("ScoreText").GetComponent<Text>().text = "Great O:" + GoodAns + " X:" + BadAns;
                     Level++;
-                    GameLoopSta =true;
+                    FinalStat = true;
                 }
                 else
                 {
-                    //BadAns += 1;
-                    //GameObject.Find("ScoreText").GetComponent<Text>().text = "NOPE O:" + GoodAns + " X:" + BadAns;
-                    GameLoopSta = true;
+                    FinalStat = true;
                 }
             }
             else
             {
-                if (AnsNum >= Ship_LevelData.Quiznum[Level])
-                {
-                    AnsNum = 0;
-                    AnsCover = true;
-                }
+
+                
                 //若點選超過n個覆蓋最舊的
                 if (AnsCover)
                 {
                     //GameObject.Find(AnsArr[i]).GetComponent<SpriteRenderer>().sprite = Resources.Load("Hoertt/white", typeof(Sprite)) as Sprite;
                     GameObject.Find(AnsList[AnsNum]).GetComponent<UI2DSprite>().color = new Color(1, 1, 1, 1);
                     AnsList[AnsNum] = name;
-                    CompBut.GetComponent<UITexture>().enabled = true;
                 }
                 else
                 {
@@ -194,10 +211,29 @@ public class Ship_Control : MonoBehaviour {
 
                 GameObject.Find(name).GetComponent<UI2DSprite>().color = new Color(0, 1, 1, 1);
                 AnsNum++;
+                if (AnsNum >= Ship_LevelData.Quiznum[Level])
+                {
+                    AnsNum = 0;
+                    AnsCover = true;
+                    CompBut.GetComponent<UITexture>().enabled = true;
+                }
 
             }
         }
     }
+
+    IEnumerator GameFinal()
+    {
+        while (true)
+        {
+        if (FinalStat == true)
+            {
+                StartCoroutine(GameLoop());
+            }
+        yield return null;
+        }
+    }
+
 
     //======================================================
     //public bool Connect(string host, int port)
@@ -254,10 +290,10 @@ public class Ship_Control : MonoBehaviour {
     //        {
     //            response = reader.ReadLine();
 
-    //            JObject jObject =  JObject.Parse(response);
+    //            JObject jObject = JObject.Parse(response);
 
     //            Packet p = new Packet();
-    //            p.RawData = (string)jObject["json"];
+    //            p.RawData = (string)jObject;
 
     //            p.Category = (string)jObject["category"];
     //            p.Request = (string)jObject["request"];
@@ -271,7 +307,7 @@ public class Ship_Control : MonoBehaviour {
     //                  We can further parse the Key-Value pairs from the values here.
     //                  For example using a switch on the Category and/or Request 
     //                  to create Gaze Data or CalibrationResult objects and pass these 
-    //                  via separate events.
+    //                  via separate even ts.
 
     //                  To get the estimated gaze coordinate (on-screen pixels):
     //                  JObject gaze = JObject.Parse(jFrame.SelectToken("avg").ToString());
@@ -315,4 +351,8 @@ public class Ship_Control : MonoBehaviour {
     //        get { return packet; }
     //    }
     //}
+
+
+
 }
+
