@@ -25,8 +25,8 @@ public class Ship_AnimalClic : MonoBehaviour {
     }
     void clickenvent(GameObject go)
     {
-        Debug.Log(go.name);
-        Debug.Log("click: " + clickopen);
+        //Debug.Log(go.name);
+        //Debug.Log("click: " + clickopen);
         if (clickopen)
         {
 
