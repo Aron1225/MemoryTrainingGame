@@ -1,8 +1,4 @@
 sceneSetups:
-<<<<<<< HEAD
-- path: Assets/Scene/JT/Level-2/Level2-1.unity
-=======
-- path: Assets/Scene/Hoertt/Ship.unity
->>>>>>> test
+- path: Assets/Scene/JT/Menu.unity
   isLoaded: 1
   isActive: 1

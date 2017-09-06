@@ -68,3 +68,5 @@ C:\Users\Aron\Desktop\MemoryTrainingGame\unity\Temp\bin\Debug\UnityEngine.VR.xml
 C:\Users\Aron\Desktop\MemoryTrainingGame\unity\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
 C:\Users\Aron\Desktop\MemoryTrainingGame\unity\obj\Debug\Assembly-CSharp.dll
 C:\Users\Aron\Desktop\MemoryTrainingGame\unity\obj\Debug\Assembly-CSharp.pdb
+C:\Users\Aron\Desktop\MemoryTrainingGame\unity\Temp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Aron\Desktop\MemoryTrainingGame\unity\Temp\bin\Debug\TETCSharpClient.dll

@@ -46,10 +46,11 @@ public class Level2_Menu : MonoBehaviour
 
 	void ButtonEvent ()
 	{
-		BackMainHome.onClick.Add(new EventDelegate (() => SceneManager.LoadScene (0)));
+		BackMainHome.onClick.Add (new EventDelegate (() => SceneManager.LoadScene (0)));
 		Button_Level [0].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (8))));
 		Button_Level [1].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (9))));
 		Button_Level [2].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (10))));
+		Button_Level [3].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (11))));
 	}
 
 	//顯示Loading進度、跳轉Scene

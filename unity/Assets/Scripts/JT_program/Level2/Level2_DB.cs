@@ -9,7 +9,7 @@ public class Level2_DB : MonoBehaviour
 
 	public readonly int TOTAL_LEVEL = 10;
 
-	public readonly int TimeOut_Time = 30;
+	public readonly int TimeOut_Time = 5;
 
 	//Color............................
 

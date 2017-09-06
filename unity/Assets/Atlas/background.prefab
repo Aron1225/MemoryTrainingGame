@@ -54,7 +54,7 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: ab4b03f5a67a62b4cb359d9e405fd399, type: 2}
   mSprites:
   - name: b2
-    x: 0
+    x: 1668
     y: 380
     width: 1667
     height: 1667
@@ -71,6 +71,19 @@ MonoBehaviour:
     y: 2048
     width: 2048
     height: 2048
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 0
+    paddingBottom: 0
+  - name: menubackground
+    x: 0
+    y: 380
+    width: 1667
+    height: 1667
     borderLeft: 0
     borderRight: 0
     borderTop: 0

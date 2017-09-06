@@ -842,8 +842,8 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 114199203647233288, guid: 44264ec53171fe3479790ee069288606, type: 2}
-  mSpriteName: 2
+  mAtlas: {fileID: 114261589760476770, guid: b5ba0b28436afbf419942a7cf6d61aa6, type: 2}
+  mSpriteName: coffee
   mFillCenter: 1
 --- !u!65 &616656968
 BoxCollider:
@@ -2426,12 +2426,12 @@ MonoBehaviour:
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
   mWidth: 1500
-  mHeight: 900
+  mHeight: 875
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.6666666
+  aspectRatio: 1.7142857
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -2443,7 +2443,7 @@ MonoBehaviour:
   bottomType: 1
   topType: 1
   mAtlas: {fileID: 114223197458317360, guid: b3498633d882ca9499f9a186915a1496, type: 2}
-  mSpriteName: b2
+  mSpriteName: menubackground
   mFillCenter: 1
 --- !u!1 &1587988055
 GameObject:
@@ -3248,8 +3248,8 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 114199203647233288, guid: 44264ec53171fe3479790ee069288606, type: 2}
-  mSpriteName: 1
+  mAtlas: {fileID: 114261589760476770, guid: b5ba0b28436afbf419942a7cf6d61aa6, type: 2}
+  mSpriteName: UFO
   mFillCenter: 1
 --- !u!65 &1818298074
 BoxCollider:

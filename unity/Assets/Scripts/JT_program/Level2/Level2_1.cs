@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
-using System.Runtime.InteropServices;
 
 public class Level2_1 : MonoBehaviour
 {
@@ -49,16 +48,16 @@ public class Level2_1 : MonoBehaviour
 	{
 		//{ Loop, random,iCoffeeCup}
 		LevelParameter = new Level[][,] {
-			new Level[,] { { new Level (1, 2, CoffeeCup.build (Model.OneCup_TwoBall)) } }, 
-			new Level[,] { { new Level (1, 2, CoffeeCup.build (Model.OneCups_ThreeBall)) } }, 
-			new Level[,] { { new Level (1, 3, CoffeeCup.build (Model.OneCups_ThreeBall)) } },
-			new Level[,] { { new Level (1, 3, CoffeeCup.build (Model.OneCups_FourBall)) } },
-			new Level[,] { { new Level (1, 4, CoffeeCup.build (Model.OneCups_FourBall)) } },
-			new Level[,] { { new Level (1, 4, CoffeeCup.build (Model.OneCups_FiveBall)) } },
-			new Level[,] { { new Level (1, 5, CoffeeCup.build (Model.OneCups_FiveBall)) } },
-			new Level[,] { { new Level (1, 5, CoffeeCup.build (Model.OneCups_SixBall)) } },
-			new Level[,] { { new Level (1, 6, CoffeeCup.build (Model.OneCups_SixBall)) } },
-			new Level[,] { { new Level (1, 6, CoffeeCup.build (Model.OneCups_SevenBall)) } },
+			new Level[,] { { new Level (20, 2, CoffeeCup.build (Model.OneCups_ThreeBall)) } }, 
+			new Level[,] { { new Level (25, 3, CoffeeCup.build (Model.OneCups_ThreeBall)) } },
+			new Level[,] { { new Level (25, 3, CoffeeCup.build (Model.OneCups_FourBall)) } },
+			new Level[,] { { new Level (30, 4, CoffeeCup.build (Model.OneCups_FourBall)) } },
+			new Level[,] { { new Level (30, 4, CoffeeCup.build (Model.OneCups_FiveBall)) } },
+			new Level[,] { { new Level (35, 5, CoffeeCup.build (Model.OneCups_FiveBall)) } },
+			new Level[,] { { new Level (35, 5, CoffeeCup.build (Model.OneCups_SixBall)) } },
+			new Level[,] { { new Level (40, 6, CoffeeCup.build (Model.OneCups_SixBall)) } },
+			new Level[,] { { new Level (40, 6, CoffeeCup.build (Model.OneCups_SevenBall)) } },
+			new Level[,] { { new Level (40, 7, CoffeeCup.build (Model.OneCups_SevenBall)) } },
 		};
 	}
 
@@ -84,7 +83,7 @@ public class Level2_1 : MonoBehaviour
 			Debug.Log ("GameOver");
 		}
 		if (code == 2) {
-//			Controller.TimeOut ();//遊戲閒置
+			Controller.TimeOut ();//遊戲閒置
 			Debug.Log ("TimeOut");
 		}
 
@@ -142,10 +141,10 @@ public class Level2_1 : MonoBehaviour
 //				break;
 //			}
 //
-//			if (Controller.IfTimeOut) {
-//				CheckCode = 2;
-//				break;
-//			}
+			if (Controller.IfTimeOut) {
+				CheckCode = 2;
+				break;
+			}
 		}
 
 		coffeeCup.stop ();

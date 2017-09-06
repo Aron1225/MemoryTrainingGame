@@ -142,17 +142,17 @@ public class Level2_Controller : MonoBehaviour
 		}	
 	}
 
-//	///關卡設定
-//	public IEnumerator _LevelManagement (ICoffeeCup ICC)
-//	{
-//		DisplaySliderBar ();//更新難度條
-//
-//		ICC.start ();
-//
-//		yield break;
-//
-////		yield return ICC;
-//	}
+	//	///關卡設定
+	//	public IEnumerator _LevelManagement (ICoffeeCup ICC)
+	//	{
+	//		DisplaySliderBar ();//更新難度條
+	//
+	//		ICC.start ();
+	//
+	//		yield break;
+	//
+	////		yield return ICC;
+	//	}
 
 	//亂數
 	public IEnumerator _MakeRandom ()
@@ -374,8 +374,8 @@ public class Level2_Controller : MonoBehaviour
 
 	public void GA_LevelMenu ()
 	{
+		CoffeeCup.CoffeeCupStop ();
 		StopAllCoroutines ();
-//		resetParameter ();//參數初始
 		UI_GA_LevelMenu ();
 		GA.HideAllGUIs ();
 	}
@@ -388,11 +388,9 @@ public class Level2_Controller : MonoBehaviour
 
 	public void GA_Again ()
 	{
+		CoffeeCup.CoffeeCupStop ();
 		StopAllCoroutines ();
 		GameStart (this.gameObject);
-//		resetParameter ();//參數初始
-//		StartGameLoop (this.gameObject);
-//		ControllerStart ();
 	}
 
 	//private..................................................................
@@ -588,7 +586,7 @@ public class Level2_Controller : MonoBehaviour
 
 	private void UI_Slider_Level_dir (bool Forward)
 	{
-		//UI_dir (Forward, true, UI.UI_Slider_Level, ref TP_Slider_Level, 0.6f, new Vector3 (-535, -146, 0));
+		UI_dir (Forward, true, UI.Slider_Level, ref TP_Slider_Level, 0.6f, new Vector3 (-535, -146, 0));
 	}
 
 	private void UI_Wrong_dir (bool Forward)
@@ -598,7 +596,7 @@ public class Level2_Controller : MonoBehaviour
 
 	private void UI_TimeOut_dir (bool Forward)
 	{
-		//UI_dir (Forward, false, UI.TimeOut, ref TP_TimeOut, 0.6f, new Vector3 (0, -34, 0));
+		UI_dir (Forward, false, UI.TimeOut, ref TP_TimeOut, 0.6f, new Vector3 (0, -34, 0));
 	}
 
 	private void UI_dir (bool Forward, bool hidden, GameObject go, ref TweenPosition TP, float duration, Vector3 pos)
@@ -655,7 +653,7 @@ public class Level2_Controller : MonoBehaviour
 
 		//TimeOut..............................
 
-		//UIEventListener.Get (UI.Button_TimeOutBackHome.gameObject).onClick = Btn_BackHome;
+		UIEventListener.Get (UI.Button_TimeOutBackHome.gameObject).onClick = Btn_BackHome;
 	}
 
 	//顯示答對錯Icon

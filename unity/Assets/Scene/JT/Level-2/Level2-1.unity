@@ -7752,7 +7752,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 905365895}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -103, y: 0, z: 0}
+  m_LocalPosition: {x: -137, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1858713626}
@@ -21569,9 +21569,9 @@ MonoBehaviour:
   thumb: {fileID: 905365896}
   mBG: {fileID: 1858713630}
   mFG: {fileID: 1486898450}
-  mValue: 0.22
+  mValue: 0.09
   mFill: 0
-  numberOfSteps: 6
+  numberOfSteps: 11
   onChange: []
   foreground: {fileID: 0}
   rawValue: 1

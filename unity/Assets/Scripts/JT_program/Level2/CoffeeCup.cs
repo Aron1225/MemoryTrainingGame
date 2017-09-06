@@ -15,12 +15,15 @@ public class CoffeeCup : ICoffeeCup
 	//小圈們速度
 	private int[] m_cups_speed;
 
+	public static System.Action CoffeeCupStop;
+
 	//建構子
 	private CoffeeCup (int modelIndex)
 	{
 		this.m_modelIndex = modelIndex;
 		int length = ModelDatabase.coffeeCups [modelIndex].cups.Length + 1;//取得小圈+大圈數量
 		CR = new CustomRotation[length];
+		CoffeeCupStop += stop;
 	}
 
 	///工廠方法
@@ -71,9 +74,7 @@ public class CoffeeCup : ICoffeeCup
 		var cylinder = ModelDatabase.coffeeCups [m_modelIndex].Model;
 		cylinder.SetActive (true);
 		if (m_cylinder_speed != 0) {
-			if (cylinder.GetComponent<CustomRotation> () == null)
-				CR [0] = cylinder.AddComponent<CustomRotation> ();//加上旋轉腳本
-
+			CR [0] = cylinder.AddComponent<CustomRotation> ();//加上旋轉腳本
 			CR [0].speed = m_cylinder_speed;
 		}
 
@@ -81,9 +82,10 @@ public class CoffeeCup : ICoffeeCup
 		if (m_cups_speed != null) {
 			for (int i = 1; i <= m_cups_speed.Length; i++) {
 				var cup = ModelDatabase.coffeeCups [m_modelIndex].cups [i - 1];
-				if (cup.GetComponent<CustomRotation> () == null)
+				if (m_cups_speed [i - 1] != 0) {
 					CR [i] = cup.AddComponent<CustomRotation> ();//加上旋轉腳本
-				CR [i].speed = m_cups_speed [i - 1];
+					CR [i].speed = m_cups_speed [i - 1];
+				}
 			}
 		}
 	}
@@ -94,7 +96,7 @@ public class CoffeeCup : ICoffeeCup
 		if (this != null)
 			for (int i = 0; i < CR.Length; i++)
 				if (CR [i] != null)
-					CR [i].SmoothStop ();
+					CR [i].RotateStop ();
 	}
 
 	//	private void init_m_cups_speed (out CustomRotation[] CR, int model)

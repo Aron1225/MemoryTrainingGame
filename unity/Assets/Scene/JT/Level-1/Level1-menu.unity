@@ -3837,15 +3837,15 @@ MonoBehaviour:
     relative: 1
     absolute: 0
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: 0.903}
   mPivot: 4
   mWidth: 1500
-  mHeight: 900
+  mHeight: 935
   mDepth: 1
   autoResizeBoxCollider: 0
   hideIfOffScreen: 0
   keepAspectRatio: 0
-  aspectRatio: 1.6666666
+  aspectRatio: 1.6042781
   mType: 0
   mFillDirection: 4
   mFillAmount: 1
@@ -3856,8 +3856,8 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
-  mAtlas: {fileID: 114084983753649536, guid: dbb30142a3e2f2946985c656e85ca409, type: 2}
-  mSpriteName: Blank
+  mAtlas: {fileID: 114318187010523674, guid: 77a0bc9568f5dbc4c95a478bedbcef91, type: 2}
+  mSpriteName: spaceBackgound2
   mFillCenter: 1
 --- !u!1 &1587988055
 GameObject:

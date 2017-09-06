@@ -53,6 +53,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: bc7a0d4a7a827594ca401de0c8c901f1, type: 2}
   mSprites:
+  - name: coffee
+    x: 1571
+    y: 966
+    width: 1181
+    height: 1082
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 33
+    paddingBottom: 66
   - name: logo
     x: 0
     y: 990
@@ -66,9 +79,22 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
-  - name: warning
+  - name: UFO
     x: 0
-    y: 547
+    y: 13
+    width: 1181
+    height: 976
+    borderLeft: 0
+    borderRight: 0
+    borderTop: 0
+    borderBottom: 0
+    paddingLeft: 0
+    paddingRight: 0
+    paddingTop: 85
+    paddingBottom: 120
+  - name: warning
+    x: 1571
+    y: 523
     width: 512
     height: 442
     borderLeft: 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CustomRotation : MonoBehaviour
 {
 	public float speed;
@@ -16,32 +17,40 @@ public class CustomRotation : MonoBehaviour
 		speed *= Clockwise ? 1 : -1;
 	}
 
-	//緩慢停止
-	public void SmoothStop ()
+	//直接停止
+	public void RotateStop ()
 	{
-		StartCoroutine (smooth ());
+		Destroy (this);//移除腳本
 	}
 
-	IEnumerator smooth ()
-	{
-		while (speed != 0) {
-			if (speed > 0)
-				speed -= 0.5f;
-			if (speed < 0)
-				speed += 0.5f;
-			yield return null;
-		}
-//		DisableScript ();//停止旋轉後關閉
-		DestroyScript ();//停止旋轉後移除腳本
-	}
-
-	void DisableScript ()
-	{
-		enabled = false;
-	}
-
-	void DestroyScript ()
-	{
-		Destroy (this);
-	}
+	//	//緩慢停止
+	//	public void SmoothStop ()
+	//	{
+	//		StartCoroutine (smooth ());
+	//	}
+	//
+	//	IEnumerator smooth ()
+	//	{
+	//		while (speed != 0) {
+	//			Debug.Log (speed);
+	//			Debug.Log ("1");
+	//			if (speed > 0)
+	//				speed -= 0.5f;
+	//			if (speed < 0)
+	//				speed += 0.5f;
+	//			yield return null;
+	//		}
+	////		DisableScript ();//停止旋轉後關閉
+	//		DestroyScript ();//停止旋轉後移除腳本
+	//	}
+	//
+	//	void DisableScript ()
+	//	{
+	//		enabled = false;
+	//	}
+	//
+	//	void DestroyScript ()
+	//	{
+	//		Destroy (this);
+	//	}
 }

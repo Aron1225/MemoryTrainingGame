@@ -116,3 +116,5 @@ C:\Users\Aron\Desktop\MemoryTrainingGame\unity\Temp\bin\Debug\UnityEditor.iOS.Ex
 C:\Users\Aron\Desktop\MemoryTrainingGame\unity\obj\Debug\Assembly-CSharp-Editor-firstpass.csprojResolveAssemblyReference.cache
 C:\Users\Aron\Desktop\MemoryTrainingGame\unity\obj\Debug\Assembly-CSharp-Editor-firstpass.dll
 C:\Users\Aron\Desktop\MemoryTrainingGame\unity\obj\Debug\Assembly-CSharp-Editor-firstpass.pdb
+C:\Users\Aron\Desktop\MemoryTrainingGame\unity\Temp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Aron\Desktop\MemoryTrainingGame\unity\Temp\bin\Debug\TETCSharpClient.dll

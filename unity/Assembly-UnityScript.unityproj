@@ -145,6 +145,12 @@
  <Reference Include="MonitorComponents">
  <HintPath>C:/Users/Aron/Desktop/MemoryTrainingGame/unity/Assets/Monitor Components/MonitorComponents.dll</HintPath>
  </Reference>
+ <Reference Include="Newtonsoft.Json">
+ <HintPath>C:/Users/Aron/Desktop/MemoryTrainingGame/unity/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+ </Reference>
+ <Reference Include="TETCSharpClient">
+ <HintPath>C:/Users/Aron/Desktop/MemoryTrainingGame/unity/Assets/Plugins/TETCSharpClient.dll</HintPath>
+ </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
