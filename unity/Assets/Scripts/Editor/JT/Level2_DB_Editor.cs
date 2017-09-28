@@ -37,26 +37,26 @@ public class Level2_DB_Editor : MonoBehaviour
 //
 //			EditorGUILayout.EndHorizontal ();
 
-			EditorGUILayout.BeginHorizontal ();
-
-			GUILayout.Label ("隨機數", GUILayout.Width (40));
-
-			DB.random = EditorGUILayout.IntField (DB.random);
-
-			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
-				DB.random = 0;
-			}
-
-			if (GUILayout.Button ("+", GUILayout.Width (30))) {
-				DB.random++;///要設計最大不可超過值
-			}
-			if (GUILayout.Button ("-", GUILayout.Width (30))) {
-				if (DB.random > 3) {
-					DB.random--;
-				}
-			}
-
-			EditorGUILayout.EndHorizontal ();
+//			EditorGUILayout.BeginHorizontal ();
+//
+//			GUILayout.Label ("隨機數", GUILayout.Width (40));
+//
+//			DB.random = EditorGUILayout.IntField (DB.random);
+//
+//			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
+//				DB.random = 0;
+//			}
+//
+//			if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//				DB.random++;///要設計最大不可超過值
+//			}
+//			if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//				if (DB.random > 3) {
+//					DB.random--;
+//				}
+//			}
+//
+//			EditorGUILayout.EndHorizontal ();
 
 			EditorGUILayout.BeginHorizontal ();
 			{
@@ -92,19 +92,19 @@ public class Level2_DB_Editor : MonoBehaviour
 			}
 			EditorGUILayout.EndHorizontal ();
 
-			EditorGUILayout.BeginHorizontal ();
-			{
-				DB.Main_Cylinder = (GameObject)EditorGUILayout.ObjectField ("Main_Cylinder", DB.Main_Cylinder, typeof(GameObject), true);
-			}
-			EditorGUILayout.EndHorizontal ();
+//			EditorGUILayout.BeginHorizontal ();
+//			{
+//				DB.Main_Camera = (Camera)EditorGUILayout.ObjectField ("Main_Camera", DB.Main_Camera, typeof(GameObject), true);
+//			}
+//			EditorGUILayout.EndHorizontal ();
 
-			EditorGUILayout.BeginHorizontal ();
-			{
-				serializedObject.Update ();
-				EditorGUILayout.PropertyField (serializedObject.FindProperty ("Cups"), true);//true顯示陣列內容
-				serializedObject.ApplyModifiedProperties ();//不加就不能動陣列
-			}
-			EditorGUILayout.EndHorizontal ();
+//			EditorGUILayout.BeginHorizontal ();
+//			{
+//				serializedObject.Update ();
+//				EditorGUILayout.PropertyField (serializedObject.FindProperty ("Cups"), true);//true顯示陣列內容
+//				serializedObject.ApplyModifiedProperties ();//不加就不能動陣列
+//			}
+//			EditorGUILayout.EndHorizontal ();
 
 			//顯示預設檢視面板屬性編輯器
 //			DrawDefaultInspector ();

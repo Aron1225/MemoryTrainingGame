@@ -5,7 +5,7 @@ using System;
 
 public class BALL : MonoBehaviour
 {
-	public Level2_Controller Controller;
+	public Level2_Controller_old Controller;
 
 	//點擊開關 default = false
 	public bool m_bToggle;

@@ -3,24 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Level2_Menu : MonoBehaviour
+public class Level2_Menu : Menu
 {
 	//public..................................
 
-	//主選單
-	public GameObject LevelSelect;
-	//進度畫面
-	public GameObject Loading;
-	//進度條
-	public MaterialUI.sliderSetting progressBar;
+	public GameObject Window_AskUseBrainWave;
+
+	//藍芽檢查
+	public GameObject Window_OpenBluetooth;
+
 	//回到主頁面
 	public UIButton BackMainHome;
-	//遊戲玩法
-	public UIButton[] Button_Level;
+
+	//使用腦波儀
+	public UIButton EnableBrainWave;
+
+	//不使用腦波儀
+	public UIButton DisableBrainWave;
+
 
 	//private..................................
 
-	private WaitForEndOfFrame waitforendOfframe;
+	//TweenPosition
+
+	private TweenPosition TP_UseBrainWave;
+
+	private TweenPosition TP_OpenBluetooth;
+
+
+	//第一次進入遊戲詢問始使用腦波
+	public static bool AskUseBrainWave = true;
+
+	//要使用腦波嗎
+	public static bool UseBrainWave = false;
 
 
 	void Awake ()
@@ -31,7 +46,10 @@ public class Level2_Menu : MonoBehaviour
 
 	void Start ()
 	{
-		
+		if (AskUseBrainWave)
+			UI_BrainWave_dir (true);
+		else
+			LevelSelect.SetActive (true);
 	}
 
 	void Update ()
@@ -39,60 +57,50 @@ public class Level2_Menu : MonoBehaviour
 		
 	}
 
-	void init ()
+	public override void ButtonEvent ()
 	{
-		waitforendOfframe = new WaitForEndOfFrame ();	
+		BackMainHome.onClick.Add (new EventDelegate (() => {
+			AskUseBrainWave = true;
+			SceneManager.LoadSceneAsync (0);
+		}));
+
+		EnableBrainWave.onClick.Add (new EventDelegate (() => {
+			AskUseBrainWave = false;
+			UseBrainWave = true;
+			UI_BrainWave_dir (false);
+
+			#if !UNITY_EDITOR
+			bool bluetoothEnable = Connect.jo.Call<bool> ("CheckBluetoothState");
+			if (bluetoothEnable)
+				LevelSelect.SetActive (true);
+			else
+				UI_OpenBluetooth_dir (true);
+			#endif
+			
+		}));
+
+		DisableBrainWave.onClick.Add (new EventDelegate (() => {
+			AskUseBrainWave = false;
+			UseBrainWave = false;
+			UI_BrainWave_dir (false);
+			LevelSelect.SetActive (true);
+		}));
+		base.Button_Level [0].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (8))));
+		base.Button_Level [1].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (9))));
+		base.Button_Level [2].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (10))));
+		base.Button_Level [3].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (11))));
+		base.Button_Level [4].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (12))));
 	}
 
-	void ButtonEvent ()
+	private void UI_BrainWave_dir (bool Forward)
 	{
-		BackMainHome.onClick.Add (new EventDelegate (() => SceneManager.LoadScene (0)));
-		Button_Level [0].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (8))));
-		Button_Level [1].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (9))));
-		Button_Level [2].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (10))));
-		Button_Level [3].onClick.Add (new EventDelegate (() => StartCoroutine (DisplayLoadingScreen (11))));
+		UI_dir (Forward, false, Window_AskUseBrainWave, ref TP_UseBrainWave, 0.6f, new Vector3 (0, -34, 0));
 	}
 
-	//顯示Loading進度、跳轉Scene
-	IEnumerator DisplayLoadingScreen (int SceneNumber)
+	private void UI_OpenBluetooth_dir (bool Forward)
 	{
-		LevelSelect.SetActive (false);
-		Loading.SetActive (true);
-
-		progressBar.LoadingAnimStart ();
-
-		yield return new WaitForSeconds (0.5f);
-
-		AsyncOperation LoadScene = SceneManager.LoadSceneAsync (SceneNumber);
-		//載入完後先不跳轉Scene
-		LoadScene.allowSceneActivation = false;
-
-		float Progress = 0;
-
-		float displayProgress = 0;
-
-		while (LoadScene.progress < 0.9f) {
-			Progress = LoadScene.progress;
-			while (displayProgress < Progress) {
-				progressBar.slider.value = (displayProgress += 0.01f) * 100;
-				yield return waitforendOfframe;
-			}
-		}
-
-		Progress = 1f;
-
-		while (displayProgress < Progress) {
-			progressBar.slider.value = (displayProgress += 0.01f) * 100;
-			yield return waitforendOfframe;
-		}
-
-		progressBar.LoadingAnimFinished ();
-
-		yield return new WaitForSeconds (0.4f);
-
-		Resources.UnloadUnusedAssets ();//讓Unity 自行去卸載掉不使用的資源
-
-		//跳轉Scene
-		LoadScene.allowSceneActivation = true;
+		UI_dir (Forward, false, Window_OpenBluetooth, ref TP_OpenBluetooth, 0.6f, new Vector3 (0, -34, 0));
 	}
 }
+
+

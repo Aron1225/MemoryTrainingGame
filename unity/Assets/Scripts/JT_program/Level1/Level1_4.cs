@@ -1,59 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
-using System;
-using UnityEngine.SceneManagement;
 
-public class Level1_4 : MonoBehaviour
+public class Level1_4 : Level1
 {
-	//	Level1_DB DB;
-	Level1_Controller Controller;
-	public CameraControl2 Camera;
+	/*field*/
+
+	//main camera
+	public CameraControl mCamera;
 
 	//關卡參數
-	int[][,] LevelParameter;
+	private	int[][,] LevelParameter = null;
 
-	//	private int Loop = 5;
-	//	private int LevelCount = 0;
+	/*methods*/
 
-	void Awake ()
+	//mono..........................
+
+	public override void OnAwake ()
 	{
-//		DB = GetComponent<Level1_DB> ();
-		Controller = GetComponent<Level1_Controller> ();
+		base.OnAwake ();
+		level_instance = this;
+		CT1 = GetComponent<Level1_Controller> ();
+		controller = CT1;
 	}
 
-	void Start ()
+	public override void OnStart ()
 	{
+		base.OnStart ();
 		Parameter ();
-
-		//讀取地圖
 		MAP ();
-
-		ButtonEvent ();
+		SetCameraSteps ();
 	}
 
-	void ButtonEvent ()
-	{
-		//將執行權給Controller
-		Controller.StartGameLoop += (GameObject go) => StartCoroutine (GameLoop ());
-	}
+	//function......................
 
-	void Parameter ()
+	public override void Parameter ()
 	{
 		//{ Loop, arrangement_index, random,CameraStep}
 		LevelParameter = new int[][,] {
-//			new int[,] { { 2, 0, 2, 0 } },//1
-//			new int[,] { { 2, 0, 3, 0 } },//2
-//			new int[,] { { 2, 1, 3, 1 } },//3
-//			new int[,] { { 2, 1, 4, 1 } },//4
-//			new int[,] { { 2, 2, 4, 2 } },//5
-//			new int[,] { { 2, 2, 5, 2 } },//6
-//			new int[,] { { 2, 3, 5, 3 } },//7
-//			new int[,] { { 2, 3, 6, 3 } },//8
-//			new int[,] { { 1, 4, 6, 4 }, { 1, 4, 7, 4 } },//9
-//			new int[,] { { 1, 4, 7, 4 }, { 1, 4, 8, 4 } },//10
-
 			new int[,] { { 20, 0, 2, 0 } },//1
 			new int[,] { { 20, 0, 3, 0 } },//2
 			new int[,] { { 25, 1, 3, 1 } },//3
@@ -67,100 +51,77 @@ public class Level1_4 : MonoBehaviour
 		};
 	}
 
-	private void MAP ()
+	public override void MAP ()
 	{
-//		DB.map = Resources.LoadAll<TextAsset> ("JT/maps");
+		CT1.useL1DB.map = Resources.LoadAll<TextAsset> ("JT/maps");
 		//讀入txt
-		Controller.LoadMap (Resources.LoadAll<TextAsset> ("JT/maps") [3].text);
+		CT1.LoadMap (Resources.LoadAll<TextAsset> ("JT/maps") [3].text);
 	}
 
-	IEnumerator GameLoop ()
-	{
-		IEnumerator e = Loop1 (Controller.Select_Level_number);
-
-		yield return StartCoroutine (e);
-
-		//回傳遊戲是如何結束
-		//回傳0代表正常結束遊戲
-		//回傳1代表錯誤9次
-		//回傳2代表遊戲閒置
-
-		int code = (int)e.Current;//UnBox
-
-		if (code == 0) {
-			Controller.Finish ();//結束遊戲
-			Debug.Log ("finish");
-		}
-		if (code == 1) {
-			Controller.GameOver ();//錯誤9次
-			Debug.Log ("GameOver");
-		}
-		if (code == 2) {
-			Controller.TimeOut ();//遊戲閒置
-			Debug.Log ("TimeOut");
-		}
-		yield break;
-	}
-
-	IEnumerator Loop1 (int Select_Level_number)
+	public override IEnumerator Loop1 (int Select_Level_number)
 	{
 		int number = Select_Level_number - 1;
-
+		
 		IEnumerator e = null;
-
+		
 		for (int i = 0; i < LevelParameter [number].GetLength (0); i++) {
-
+		
 			var Loop = LevelParameter [number] [i, 0];
-
+		
 			var mapIndex = LevelParameter [number] [i, 1];
-
-			//DB.random = LevelParameter [number] [i, 2];
-			Controller.random = LevelParameter [number] [i, 2];
-
+		
+			var random = LevelParameter [number] [i, 2];
+		
 			var CameraStep = LevelParameter [number] [i, 3];
-
-			e = Loop2 (Loop, CameraStep, mapIndex);
-
+		
+			e = Loop2 (Loop, random, CameraStep, mapIndex);
+		
 			yield return StartCoroutine (e);
-
+		
 			if ((int)e.Current != 0)
 				break;
 		}
-
+		
 		yield return e.Current;//回傳至GameLoop
 	}
 
-	IEnumerator Loop2 (int Loop, int CameraStep, int mapIndex)
+	public override IEnumerator Loop2 (params object[] args)
 	{
-		Camera.Step (CameraStep);
+		var Loop = (int)args [0];
+		var random = (int)args [1];
+		var step = (int)args [2];
+		var mapIndex = (int)args [3];
 
+		CT1.useL1DB.random = random;
+
+		mCamera.Step (step);
+		
 		int CheckCode = 0;
-
-		if (!Controller.start)
+		
+		if (!CT1.useL1DB.start)
 			for (int j = 0; j <= mapIndex; j++)
-				yield return StartCoroutine (LevelManagement (Controller.Get_arrangement (j)));
-//				yield return StartCoroutine (LevelManagement (DB.arrangement [j]));
-
+				yield return StartCoroutine (LevelManagement (CT1.Get_arrangement (j)));
+		
 		for (int i = 0; i < Loop; i++) {
-
+		
 			//隨機亂數
-			yield return StartCoroutine (MakeRandom ());
-
+			yield return StartCoroutine (MakeRandom (CT1.useL1DB.random));
+		
 			//亮燈
 			yield return StartCoroutine (ShowLight ());
-
+		
 			//答案比對
 			yield return StartCoroutine (AnswerCompare ());
-
+		
 			//重置
 			yield return StartCoroutine (Reset ());
-
-			if (Controller.Feedback ()) {
+		
+			if (CT1.Feedback ()) {
 				CheckCode = 1;
 				break;
 			}
 
-			if (Controller.IfTimeOut) {
+			if (CT1.IfTimeOut) {
 				CheckCode = 2;
 				break;
 			}
@@ -168,80 +129,32 @@ public class Level1_4 : MonoBehaviour
 		yield return CheckCode;//回傳至Loop1
 	}
 
-	///關卡設定
-	IEnumerator LevelManagement (List<Vector3> map)
+	public override IEnumerator LevelManagement (params object[] args)
 	{
-		Controller.DisplaySliderBar ();//更新難度條
+		var map = (List<Vector3>)args [0];
 
+		CT1.DisplaySliderBar ();//更新難度條
+		
 		var Balance = map.Count; //多(少)幾台
-
+		
 		List<UFO> Group = UFO.InstantiateUFOs (Balance);//實例化UFO
-
+		
 		//重設場上所有UFO座標
 		for (int i = 0; i < Group.Count; i++)
 			Group [i].moveTo (0.7f, map [i], true, 0.1f);
-
+		
 		yield break;
-		//		for (int i = 0; i <= mapIndex; i++) {
-		//			var Group = UFO.InstantiateUFOs (DB.arrangement [i].Count);//實例化UFO
-		//			for (int j = 0; j < Group.Count; j++) {
-		//				Group [j].moveTo (0.7f, DB.arrangement [i] [j], true, 0.1f);
-		//			}
-		//		}
-		//		var mapCount = map.Count;
-		//		DB.g_iBalance = Level1_DB.UFOList.Count - mapCount;
-		//重設場上所有UFO座標
-		//		if (DB.g_iBalance != 0)
-		//			for (int i = 0; i < mapCount; i++)
-		//				Level1_DB.UFOList [i].moveTo (1f, map [i], true, 0.1f);
-		//		yield break;
-		//		if (!DB.start)
-		//			for (int i = 0; i <= DB.arrangement_index; i++) {
-		//				var Group = UFO.InstantiateUFOs (DB.arrangement [i].Count);//實例化UFO
-		//				for (int j = 0; j < Group.Count; j++) {
-		//					Group [j].moveTo (0.7f, DB.arrangement [i] [j], true, 0.1f);
-		//				}
-		//			}
-		//
-		//		//下一關圖形
-		//		if (LevelCount++ == Loop) {
-		//			Camera.Back ();
-		//			LevelCount = 1;
-		//			DB.arrangement_index++;
-		//			DB.g_iBalance = DB.arrangement [DB.arrangement_index].Count;//缺(多)幾台UFO
-		//			var Group = UFO.InstantiateUFOs (DB.g_iBalance);//實例化UFO
-		//			for (int j = 0; j < Group.Count; j++) {
-		//				Group [j].moveTo (0.7f, DB.arrangement [DB.arrangement_index] [j], true, 0.1f);
-		//			}
-		//		}
-		//
-		//		Controller.DisplaySliderBar ();
-		//
-		//
-		//		yield break;
 	}
 
-	//隨機亂數
-	IEnumerator MakeRandom ()
+	//設定camera距離
+	private void SetCameraSteps ()
 	{
-		yield return Controller._MakeRandom ();
-	}
-
-	//亮燈
-	IEnumerator ShowLight ()
-	{
-		yield return Controller._ShowLight ();
-	}
-
-	//答案比對
-	IEnumerator AnswerCompare ()
-	{
-		yield return Controller._AnswerCompare ();
-	}
-
-	//重置
-	IEnumerator Reset ()
-	{
-		yield return Controller._Reset ();
+		mCamera.step = new float[] {
+			-417,
+			-862,
+			-1350,
+			-1746,
+			-2184,
+		};
 	}
 }

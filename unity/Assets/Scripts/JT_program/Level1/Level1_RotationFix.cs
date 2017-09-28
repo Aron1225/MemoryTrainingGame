@@ -42,8 +42,8 @@ public class Level1_RotationFix : MonoBehaviour
 			Destroy (gameObject);
 //			return;
 			
-
-		transform.Rotate (Vector3.forward * direction * 0.5f);
+		//旋轉整個群組
+		transform.Rotate (Vector3.forward * direction * 0.25f);
 
 		//持續修正底下所有UFO
 		for (int i = 0; i < transform.childCount; i++) {

@@ -15,7 +15,7 @@ public class ModelDatabase : MonoBehaviour
 
 	static public ModelDatabase instance;
 
-	static  public CoffeeCups[] coffeeCups {
+	static public CoffeeCups[] coffeeCups {
 		get { 
 			return instance.m_coffeeCups;
 		}

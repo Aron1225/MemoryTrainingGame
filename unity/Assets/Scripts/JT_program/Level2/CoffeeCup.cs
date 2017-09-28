@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CoffeeCup : ICoffeeCup
 {
@@ -15,7 +16,7 @@ public class CoffeeCup : ICoffeeCup
 	//小圈們速度
 	private int[] m_cups_speed;
 
-	public static System.Action CoffeeCupStop;
+	//	public static System.Action CoffeeCupStop;
 
 	//建構子
 	private CoffeeCup (int modelIndex)
@@ -23,7 +24,7 @@ public class CoffeeCup : ICoffeeCup
 		this.m_modelIndex = modelIndex;
 		int length = ModelDatabase.coffeeCups [modelIndex].cups.Length + 1;//取得小圈+大圈數量
 		CR = new CustomRotation[length];
-		CoffeeCupStop += stop;
+//		CoffeeCupStop += stop;
 	}
 
 	///工廠方法
@@ -55,6 +56,19 @@ public class CoffeeCup : ICoffeeCup
 				m_cups_speed [i] = cups_speed [i];
 			}
 		}
+		return this;
+	}
+
+	public CoffeeCup camera_perspective (CameraCircularMovement camera, float duration)
+	{
+		iTween.ValueTo (camera.gameObject, iTween.Hash (
+			"from", 0.01f,
+			"to", 2f,
+			"time", duration,
+			"easetype", iTween.EaseType.linear,
+			"loopType", iTween.LoopType.pingPong,
+			"onupdate", (Action<object>)(value => camera.radius = (float)value)
+		));
 		return this;
 	}
 

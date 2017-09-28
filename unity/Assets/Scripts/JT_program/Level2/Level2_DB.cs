@@ -3,14 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Level2_DB : MonoBehaviour
+public class Level2_DB : Database
 {
-	//readOnly..........................
-
-	public readonly int TOTAL_LEVEL = 10;
-
-	public readonly int TimeOut_Time = 5;
-
 	//Color............................
 
 	static public Material Red;
@@ -27,44 +21,7 @@ public class Level2_DB : MonoBehaviour
 
 	static public  List<BALL> BALL_Random;
 
-	//Level.............................
-
-	//GameStart
-	public bool start = false;
-	///關卡難度提升
-	public bool LevelUP = false;
-	//超過時間作答
-	public bool TimeOut = false;
-	//比較開關
-	public bool Compare;
-	//難度選單數字
-	public int Select_Level_number;
-	//random幾台
-	public int random;
-	//答對次數
-	public int BingoCount;
-	//答錯次數
-	public int ErrorCount;
-
-	public float lighttime;
-
-	public float darktime;
-
-	public GameObject Main_Cylinder;
-
-	public GameObject[] Cups;
-
-	//bingo與error大小
-	public Vector3 CheckedScale;
-	//等待一秒
-	public WaitForSeconds WaitOneSecond;
-
-	//lagecy
-	//public int index;
-	//UFO數量平衡
-	//	public int g_iBalance;
-	//暫存值
-	//	public int g_iTempValue;
+	//Mono............................
 
 	void Awake ()
 	{
@@ -92,7 +49,7 @@ public class Level2_DB : MonoBehaviour
 
 		//array
 		BALLList.Clear ();
-		BALL.Clear ();
-		BALL_Random.Clear ();
+		BALL = null;
+		BALL_Random = null;
 	}
 }

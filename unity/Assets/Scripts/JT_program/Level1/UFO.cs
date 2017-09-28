@@ -80,7 +80,11 @@ public class UFO
 
 	static public void AllColliderEnabled (bool enabled)
 	{
-		Level1_DB.UFOList.ForEach (go => go.GetUFO.GetComponent<SphereCollider> ().enabled = enabled);
+		Level1_DB.UFOList.ForEach (go => {
+			if(go.GetUFO.GetComponent<SphereCollider> ()!=null){
+				go.GetUFO.GetComponent<SphereCollider> ().enabled = enabled;
+			}
+		});
 	}
 
 	//Initmove -> (duration,Pos,true,delay)

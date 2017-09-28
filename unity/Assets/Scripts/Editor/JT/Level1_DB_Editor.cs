@@ -13,52 +13,52 @@ public class Level1_DB_Editor : MonoBehaviour
 
 			GUILayout.Space (15);
 
-			EditorGUILayout.BeginHorizontal ();
-
 			//只有數值變化時執行
 			if (GUI.changed) {
 				Debug.Log ("value change");
 			}
 
-			GUILayout.Label ("排列圖", GUILayout.Width (40));
+//			EditorGUILayout.BeginHorizontal ();
+//
+//			GUILayout.Label ("排列圖", GUILayout.Width (40));
+//
+//			DB.arrangement_index = EditorGUILayout.IntField (DB.arrangement_index);
+//
+//			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
+//				DB.arrangement_index = 0;
+//			}
+//
+//			if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//				DB.arrangement_index++;///要設計最大不可超過值
+//			}
+//			if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//				if (DB.arrangement_index > 0) {
+//					DB.arrangement_index--;
+//				}
+//			}
+//
+//			EditorGUILayout.EndHorizontal ();
 
-			DB.arrangement_index = EditorGUILayout.IntField (DB.arrangement_index);
-
-			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
-				DB.arrangement_index = 0;
-			}
-
-			if (GUILayout.Button ("+", GUILayout.Width (30))) {
-				DB.arrangement_index++;///要設計最大不可超過值
-			}
-			if (GUILayout.Button ("-", GUILayout.Width (30))) {
-				if (DB.arrangement_index > 0) {
-					DB.arrangement_index--;
-				}
-			}
-
-			EditorGUILayout.EndHorizontal ();
-
-			EditorGUILayout.BeginHorizontal ();
-
-			GUILayout.Label ("隨機數", GUILayout.Width (40));
-
-			DB.random = EditorGUILayout.IntField (DB.random);
-
-			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
-				DB.random = 0;
-			}
-
-			if (GUILayout.Button ("+", GUILayout.Width (30))) {
-					DB.random++;///要設計最大不可超過值
-			}
-			if (GUILayout.Button ("-", GUILayout.Width (30))) {
-				if (DB.random > 3) {
-					DB.random--;
-				}
-			}
-
-			EditorGUILayout.EndHorizontal ();
+//			EditorGUILayout.BeginHorizontal ();
+//
+//			GUILayout.Label ("隨機數", GUILayout.Width (40));
+//
+//			DB.random = EditorGUILayout.IntField (DB.random);
+//
+//			if (GUILayout.Button ("Re", GUILayout.Width (30))) {
+//				DB.random = 0;
+//			}
+//
+//			if (GUILayout.Button ("+", GUILayout.Width (30))) {
+//					DB.random++;///要設計最大不可超過值
+//			}
+//			if (GUILayout.Button ("-", GUILayout.Width (30))) {
+//				if (DB.random > 3) {
+//					DB.random--;
+//				}
+//			}
+//
+//			EditorGUILayout.EndHorizontal ();
 
 			EditorGUILayout.BeginHorizontal ();
 			{
